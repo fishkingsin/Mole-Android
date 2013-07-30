@@ -102,7 +102,7 @@ public class FacePickActivity extends FragmentActivity implements
 				SharedPreferences prefs = PreferenceManager
 						.getDefaultSharedPreferences(mContext);
 				SharedPreferences.Editor editor = prefs.edit();
-				editor.putString("keyImageName", maleImageName[0]);
+				editor.putString("keyImageName", maleImageName[position]);
 
 				// Commit the edits!
 				editor.commit();
@@ -124,7 +124,7 @@ public class FacePickActivity extends FragmentActivity implements
 				SharedPreferences prefs = PreferenceManager
 						.getDefaultSharedPreferences(mContext);
 				SharedPreferences.Editor editor = prefs.edit();
-				editor.putString("keyImageName", femaleImageName[0]);
+				editor.putString("keyImageName", femaleImageName[position]);
 
 				// Commit the edits!
 				editor.commit();
@@ -177,7 +177,7 @@ public class FacePickActivity extends FragmentActivity implements
 				i.setScaleType(ImageView.ScaleType.FIT_CENTER);
 
 				i.setDrawingCacheEnabled(true);
-				i.setBackgroundColor(0xFF000000);
+				i.setBackgroundColor(0x00000000);
 			}
 			return i;
 

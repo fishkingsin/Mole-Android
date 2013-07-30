@@ -117,9 +117,9 @@ public class GameCoreActivity extends Activity {
 			SharedPreferences prefs = PreferenceManager
 					.getDefaultSharedPreferences(mContext);
 			sprite = Sprite.sprite(prefs.getString("keyImageName", "grossini.png"));
-			sprite.setScaleX(sprite.getWidth()/this.getWidth());
-			sprite.setScaleY(sprite.getWidth()/this.getWidth());
-			Layer layer = ColorLayer.node(new CCColor4B(255, 255, 0, 255));
+			sprite.setScaleX(0.2f);
+			sprite.setScaleY(0.2f);
+			Layer layer = ColorLayer.node(new CCColor4B(93, 113, 112, 255));
 			addChild(layer, -1);
 
 			addChild(sprite, 0, kTagSprite);
