@@ -7,4 +7,6 @@
 <string name="pls_wait_txt">please wait...</string>
 <string name="female">Female</string>
 <string name="male">Male</string>
+<string name="start">Start</string>
+<string name="input_your_name">Input your name</string>
 </resources>

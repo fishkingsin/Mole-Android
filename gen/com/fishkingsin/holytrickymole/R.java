@@ -230,15 +230,15 @@ containing a value of this type.
         public static final int com_facebook_top_background=0x7f02001e;
         public static final int com_facebook_top_button=0x7f02001f;
         public static final int com_facebook_usersettingsfragment_background_gradient=0x7f020020;
-        public static final int donald_holy_tricky_female_thumb=0x7f020021;
-        public static final int donald_holy_tricky_male_thumb=0x7f020022;
-        public static final int ic_launcher=0x7f020023;
-        public static final int ks_holy_tricky_female_thumb=0x7f020024;
-        public static final int ks_holy_tricky_male_thumb=0x7f020025;
-        public static final int lbt_holy_tricky_female_thumb=0x7f020026;
-        public static final int lbt_holy_tricky_male_thumb=0x7f020027;
-        public static final int littlethunder_holy_tricky_female_thumb=0x7f020028;
-        public static final int littlethunder_holy_tricky_male_thumb=0x7f020029;
+        public static final int custom_btn_seagull=0x7f020021;
+        public static final int donald_holy_tricky_female_thumb=0x7f020022;
+        public static final int donald_holy_tricky_male_thumb=0x7f020023;
+        public static final int ic_launcher=0x7f020024;
+        public static final int ks_holy_tricky_female_thumb=0x7f020025;
+        public static final int ks_holy_tricky_male_thumb=0x7f020026;
+        public static final int lbt_holy_tricky_female_thumb=0x7f020027;
+        public static final int lbt_holy_tricky_male_thumb=0x7f020028;
+        public static final int littlethunder_holy_tricky_female_thumb=0x7f020029;
         public static final int peter_holy_tricky_female_thumb=0x7f02002a;
         public static final int peter_holy_tricky_male_thumb=0x7f02002b;
         public static final int progress_hud_bg=0x7f02002c;
@@ -359,8 +359,10 @@ containing a value of this type.
         public static final int dummy_button=0x7f06001a;
         public static final int dummy_content=0x7f06001b;
         public static final int female=0x7f06001d;
+        public static final int input_your_name=0x7f060020;
         public static final int male=0x7f06001e;
         public static final int pls_wait_txt=0x7f06001c;
+        public static final int start=0x7f06001f;
     }
     public static final class style {
         /** 
@@ -393,9 +395,10 @@ containing a value of this type.
         public static final int ButtonBarButton=0x7f090006;
         public static final int DarkActionBar=0x7f090009;
         public static final int DarkTheme=0x7f090008;
-        public static final int FullscreenActionBarStyle=0x7f09000a;
+        public static final int FullscreenActionBarStyle=0x7f09000b;
         public static final int FullscreenTheme=0x7f090004;
         public static final int ProgressHUD=0x7f090007;
+        public static final int btnStyleSeagull=0x7f09000a;
         public static final int com_facebook_loginview_default_style=0x7f090000;
         public static final int com_facebook_loginview_silver_style=0x7f090001;
     }

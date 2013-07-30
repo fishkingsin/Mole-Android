@@ -24,19 +24,22 @@
 
         <EditText
             android:id="@+id/editText1"
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|center_horizontal"
             android:ems="10"
+            android:hint="@string/input_your_name"
             android:inputType="textPersonName"
             android:textAlignment="center" />
 
         <Button
             android:id="@+id/startbutton"
+            style="@style/btnStyleSeagull"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|center_horizontal"
-            android:text="Button" />
+            android:text="@string/start" />
+
     </LinearLayout>
 
 </FrameLayout>

@@ -37,7 +37,6 @@ public class FacePickActivity extends FragmentActivity implements
 			"donald_holy-tricky_male@2x.png",
 			"ks_holy-tricky_male@2x.png",
 			"lbt_holy-tricky_male@2x.png",
-			"littlethunder_holy-tricky_male@x2.png",
 			"peter_holy-tricky_male@2x.png",
 			"sh_holy-tricky_male@2x.png",
 			"tse_holy-tricky_male@x2.png",
@@ -55,7 +54,6 @@ public class FacePickActivity extends FragmentActivity implements
 	R.drawable.donald_holy_tricky_male_thumb,
 	R.drawable.ks_holy_tricky_male_thumb,
 	R.drawable.lbt_holy_tricky_male_thumb,
-	R.drawable.littlethunder_holy_tricky_male_thumb,
 	R.drawable.peter_holy_tricky_male_thumb,
 	R.drawable.sh_holy_tricky_male_thumb,
 	R.drawable.tse_holy_tricky_male_thumb, };
