@@ -31,32 +31,23 @@ import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
 
-public class FacePickActivity extends FragmentActivity implements
-		OnTabChangeListener {
-	private String[] maleImageName={
-			"donald_holy-tricky_male@2x.png",
-			"ks_holy-tricky_male@2x.png",
-			"lbt_holy-tricky_male@2x.png",
-			"peter_holy-tricky_male@2x.png",
-			"sh_holy-tricky_male@2x.png",
-			"tse_holy-tricky_male@x2.png",
-	};
-	private String[] femaleImageName={
-			"donald_holy-tricky_female@2x.png",
-			"ks_holy-tricky_female@2x.png",
-			"lbt_holy-tricky_female@2x.png",
+public class FacePickActivity extends FragmentActivity {
+	private String[] maleImageName = { "donald_holy-tricky_male@2x.png",
+			"ks_holy-tricky_male@2x.png", "lbt_holy-tricky_male@2x.png",
+			"peter_holy-tricky_male@2x.png", "sh_holy-tricky_male@2x.png",
+			"tse_holy-tricky_male@x2.png", };
+	private String[] femaleImageName = { "donald_holy-tricky_female@2x.png",
+			"ks_holy-tricky_female@2x.png", "lbt_holy-tricky_female@2x.png",
 			"littlethunder_holy-tricky_female@x2.png",
-			"peter_holy-tricky_female@2x.png",
-			"sh_holy-tricky_female@2x.png",
-			"tse_holy-tricky_female@2x.png",
-			};
+			"peter_holy-tricky_female@2x.png", "sh_holy-tricky_female@2x.png",
+			"tse_holy-tricky_female@2x.png", };
 	private Integer[] mImageMaleIds = {
-	R.drawable.donald_holy_tricky_male_thumb,
-	R.drawable.ks_holy_tricky_male_thumb,
-	R.drawable.lbt_holy_tricky_male_thumb,
-	R.drawable.peter_holy_tricky_male_thumb,
-	R.drawable.sh_holy_tricky_male_thumb,
-	R.drawable.tse_holy_tricky_male_thumb, };
+			R.drawable.donald_holy_tricky_male_thumb,
+			R.drawable.ks_holy_tricky_male_thumb,
+			R.drawable.lbt_holy_tricky_male_thumb,
+			R.drawable.peter_holy_tricky_male_thumb,
+			R.drawable.sh_holy_tricky_male_thumb,
+			R.drawable.tse_holy_tricky_male_thumb, };
 	private Integer[] mImageFemaleIds = {
 			R.drawable.donald_holy_tricky_female_thumb,
 			R.drawable.ks_holy_tricky_female_thumb,
@@ -89,7 +80,7 @@ public class FacePickActivity extends FragmentActivity implements
 				.setIndicator(getString(R.string.male)).setContent(R.id.tab1));
 		mTabHost.addTab(mTabHost.newTabSpec(getString(R.string.female))
 				.setIndicator(getString(R.string.female)).setContent(R.id.tab2));
-		mTabHost.setOnTabChangedListener(this);
+
 		gridview1 = (GridView) findViewById(R.id.gridview1);
 		gridview1.setAdapter(new ImageAdapter(this, mImageMaleIds));
 
@@ -104,7 +95,7 @@ public class FacePickActivity extends FragmentActivity implements
 
 				// Commit the edits!
 				editor.commit();
-				
+
 				Intent i = new Intent(FacePickActivity.this,
 						GameCoreActivity.class);
 				startActivity(i);
@@ -118,7 +109,7 @@ public class FacePickActivity extends FragmentActivity implements
 		gridview2.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View v,
 					int position, long id) {
-				
+
 				SharedPreferences prefs = PreferenceManager
 						.getDefaultSharedPreferences(mContext);
 				SharedPreferences.Editor editor = prefs.edit();
@@ -126,7 +117,7 @@ public class FacePickActivity extends FragmentActivity implements
 
 				// Commit the edits!
 				editor.commit();
-				
+
 				Intent i = new Intent(FacePickActivity.this,
 						GameCoreActivity.class);
 				startActivity(i);
@@ -135,13 +126,14 @@ public class FacePickActivity extends FragmentActivity implements
 			}
 		});
 	}
+
 	@Override
-    public void onBackPressed() {
+	public void onBackPressed() {
 		// TODO Auto-generated method stub
 		super.onBackPressed();
-		overridePendingTransition(R.anim.slide_in_left,
-				R.anim.slide_out_right);
+		overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
 	}
+
 	/**
 	 * This class loads the image gallery in grid view.
 	 * 
@@ -218,8 +210,4 @@ public class FacePickActivity extends FragmentActivity implements
 		return output;
 	}
 
-	@Override
-	public void onTabChanged(String tabId) {
-
-	}
 }

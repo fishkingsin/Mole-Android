@@ -285,6 +285,7 @@ containing a value of this type.
         public static final int com_facebook_usersettingsfragment_login_button=0x7f050018;
         public static final int com_facebook_usersettingsfragment_logo_image=0x7f050016;
         public static final int com_facebook_usersettingsfragment_profile_name=0x7f050017;
+        public static final int credit=0x7f05002b;
         public static final int editText1=0x7f050025;
         public static final int facebook_share_textfield=0x7f05001f;
         public static final int gridview1=0x7f050022;
@@ -329,6 +330,9 @@ containing a value of this type.
         public static final int tab=0x7f030015;
         public static final int tabs_fragment=0x7f030016;
     }
+    public static final class menu {
+        public static final int main_menu=0x7f0a0000;
+    }
     public static final class string {
         public static final int app_name=0x7f060019;
         public static final int com_facebook_choose_friends=0x7f06000f;
@@ -356,6 +360,9 @@ containing a value of this type.
         public static final int com_facebook_usersettingsfragment_log_in_button=0x7f060008;
         public static final int com_facebook_usersettingsfragment_logged_in=0x7f060009;
         public static final int com_facebook_usersettingsfragment_not_logged_in=0x7f06000a;
+        public static final int credit=0x7f060021;
+        public static final int credit_text=0x7f060022;
+        public static final int dismiss=0x7f060023;
         public static final int dummy_button=0x7f06001a;
         public static final int dummy_content=0x7f06001b;
         public static final int female=0x7f06001d;
