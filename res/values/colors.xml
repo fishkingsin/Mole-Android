@@ -1,0 +1,10 @@
+<resources>
+
+    <color name="black_overlay">#66000000</color>
+    <color name="default_bg_color">#000000</color>
+    <color name="default_light_text_color">#FFFFFF</color>
+    <color name="default_dark_text_color">#000000</color>
+    <color name="default_graey_text_color">#666666</color>
+    <color name="grey">#666666</color>
+    
+</resources>
