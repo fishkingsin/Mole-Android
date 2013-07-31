@@ -1,5 +1,7 @@
 package com.fishkingsin.holytrickymole;
 
+import java.util.Calendar;
+
 import org.cocos2d.actions.ActionManager;
 import org.cocos2d.actions.base.RepeatForever;
 import org.cocos2d.actions.interval.FadeIn;
@@ -13,6 +15,8 @@ import org.cocos2d.layers.ColorLayer;
 import org.cocos2d.layers.Layer;
 import org.cocos2d.nodes.CocosNode;
 import org.cocos2d.nodes.Director;
+import org.cocos2d.nodes.Label;
+import org.cocos2d.nodes.RenderTexture;
 import org.cocos2d.nodes.Scene;
 import org.cocos2d.nodes.Sprite;
 import org.cocos2d.nodes.TextureManager;
@@ -20,6 +24,7 @@ import org.cocos2d.opengl.CCGLSurfaceView;
 import org.cocos2d.types.CCColor4B;
 import org.cocos2d.types.CCMacros;
 import org.cocos2d.types.CCPoint;
+import org.cocos2d.types.CCSize;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -52,8 +57,10 @@ public class GameCoreActivity extends Activity {
 
 	private CCGLSurfaceView mGLSurfaceView;
 	private static Context mContext;
+//	private MainLayer mainLayer;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		
 		super.onCreate(savedInstanceState);
 		mContext = this;
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -85,6 +92,7 @@ public class GameCoreActivity extends Activity {
 		Director.sharedDirector().setAnimationInterval(1.0f / 60);
 
 		Scene scene = Scene.node();
+		//mainLayer = new MainLayer();
 		scene.addChild(new MainLayer(), 2);
 
 		// Make the Scene active
@@ -118,11 +126,12 @@ public class GameCoreActivity extends Activity {
 
 		ActionManager.sharedManager().removeAllActions();
 		TextureManager.sharedTextureManager().removeAllTextures();
+		//mainLayer = null;
 	}
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.main_menu, menu);
+		inflater.inflate(R.menu.gamecord_menu, menu);
 		return true;
 	}
 
@@ -176,7 +185,14 @@ public class GameCoreActivity extends Activity {
 			popUp.update(0, 0, (int)(currentView.getWidth() *0.7),
 					currentView.getHeight());
 			return true;
-
+		case R.id.saveimage:
+			//mainLayer.saveScreen();
+			return true;
+			
+		case R.id.facebook:
+//			mainLayer.saveScreen();
+			return true;
+			
 		default:
 			return super.onOptionsItemSelected(item);
 		}
@@ -184,10 +200,12 @@ public class GameCoreActivity extends Activity {
 	static class MainLayer extends Layer {
 		static final int kTagSprite = 1;
 		Sprite sprite;
-
+		RenderTexture target;
 		public MainLayer() {
-
-			isTouchEnabled_ = true;
+			CCSize s = Director.sharedDirector().winSize();
+//            target = RenderTexture.renderTexture((int)s.width, (int)s.height);
+//            addChild(target, 1);
+            isTouchEnabled_ = true;
 			SharedPreferences prefs = PreferenceManager
 					.getDefaultSharedPreferences(mContext);
 			sprite = Sprite.sprite(prefs.getString(mContext.getString(R.string.keyImageName), "grossini.png"));
@@ -197,6 +215,7 @@ public class GameCoreActivity extends Activity {
 
 			addChild(sprite, 0, kTagSprite);
 			sprite.setPosition(0, 0);
+//			target = RenderTexture.renderTexture((int)s.width, (int)s.height);
 
 			// sprite.runAction(JumpTo.action(4, 300, 48, 100, 4));
 			//
@@ -221,6 +240,15 @@ public class GameCoreActivity extends Activity {
 
 			return true;
 
+		}
+		
+		public void saveScreen()
+		{
+			Calendar c = Calendar.getInstance();
+			c.getTimeInMillis();
+			//target.begin();
+//			target.end();
+//			target.saveBuffer(c.toString()+".png");
 		}
 
 	}

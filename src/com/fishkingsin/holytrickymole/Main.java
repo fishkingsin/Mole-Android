@@ -35,7 +35,7 @@ public class Main extends Activity implements OnClickListener {
 		setContentView(R.layout.main);
 
 		Button button = (Button) findViewById(R.id.startbutton);
-		button.setEnabled(false);
+		
 		button.setOnClickListener((OnClickListener) this);
 
 		TextView tv = (TextView) findViewById(R.id.editText1);
@@ -46,6 +46,11 @@ public class Main extends Activity implements OnClickListener {
 		if(!userName.equals(""))
 		{
 			tv.setText(userName);
+			button.setEnabled(true);
+		}
+		else
+		{
+			button.setEnabled(false);
 		}
 		tv.addTextChangedListener(new TextWatcher() {
 			public void afterTextChanged(Editable s) {

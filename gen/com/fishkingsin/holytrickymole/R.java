@@ -288,6 +288,7 @@ containing a value of this type.
         public static final int com_facebook_usersettingsfragment_profile_name=0x7f070017;
         public static final int credit=0x7f07002b;
         public static final int editText1=0x7f070025;
+        public static final int facebook=0x7f07002d;
         public static final int facebook_share_textfield=0x7f07001f;
         public static final int gridview1=0x7f070022;
         public static final int gridview2=0x7f070024;
@@ -296,6 +297,7 @@ containing a value of this type.
         public static final int message=0x7f070028;
         public static final int normal=0x7f070001;
         public static final int picker_subtitle=0x7f070015;
+        public static final int saveimage=0x7f07002c;
         public static final int search_box=0x7f070014;
         public static final int small=0x7f070000;
         public static final int spinnerImageView=0x7f070027;
@@ -332,7 +334,8 @@ containing a value of this type.
         public static final int tabs_fragment=0x7f030016;
     }
     public static final class menu {
-        public static final int main_menu=0x7f0a0000;
+        public static final int gamecord_menu=0x7f0a0000;
+        public static final int main_menu=0x7f0a0001;
     }
     public static final class string {
         public static final int activity_atlasspritetest=0x7f050007;
@@ -379,16 +382,18 @@ containing a value of this type.
         public static final int com_facebook_usersettingsfragment_logged_in=0x7f05001b;
         public static final int com_facebook_usersettingsfragment_not_logged_in=0x7f05001c;
         public static final int credit=0x7f050032;
-        public static final int credit_text=0x7f050035;
-        public static final int dismiss=0x7f050036;
+        public static final int credit_text=0x7f050037;
+        public static final int dismiss=0x7f050038;
         public static final int dummy_button=0x7f05002b;
         public static final int dummy_content=0x7f05002c;
+        public static final int facebook=0x7f050036;
         public static final int female=0x7f05002e;
         public static final int input_your_name=0x7f050031;
         public static final int keyImageName=0x7f050034;
         public static final int keyUserName=0x7f050033;
         public static final int male=0x7f05002f;
         public static final int pls_wait_txt=0x7f05002d;
+        public static final int saveimage=0x7f050035;
         public static final int start=0x7f050030;
     }
     public static final class style {
