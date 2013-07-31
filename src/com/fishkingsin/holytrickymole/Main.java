@@ -2,22 +2,23 @@ package com.fishkingsin.holytrickymole;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
-import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -38,9 +39,18 @@ public class Main extends Activity implements OnClickListener {
 		button.setOnClickListener((OnClickListener) this);
 
 		TextView tv = (TextView) findViewById(R.id.editText1);
+		
+		SharedPreferences prefs = PreferenceManager
+				.getDefaultSharedPreferences(this);
+		String userName = prefs.getString(getString(R.string.keyUserName), "");
+		if(!userName.equals(""))
+		{
+			tv.setText(userName);
+		}
 		tv.addTextChangedListener(new TextWatcher() {
 			public void afterTextChanged(Editable s) {
 				if (s.length() > 0) {
+					
 					((Button) findViewById(R.id.startbutton)).setEnabled(true);
 				} else {
 					((Button) findViewById(R.id.startbutton)).setEnabled(false);
@@ -62,6 +72,15 @@ public class Main extends Activity implements OnClickListener {
 	@Override
 	public void onClick(View arg) {
 		if (arg.getId() == R.id.startbutton) {
+			
+			SharedPreferences prefs = PreferenceManager
+					.getDefaultSharedPreferences(this);
+			SharedPreferences.Editor editor = prefs.edit();
+			editor.putString(getString(R.string.keyUserName),((TextView) findViewById(R.id.editText1)).getText().toString());
+
+			// Commit the edits!
+			editor.commit();
+			
 			Intent intent = new Intent(this, FacePickActivity.class);
 			startActivity(intent);
 			overridePendingTransition(R.anim.slide_in_right,
@@ -93,7 +112,7 @@ public class Main extends Activity implements OnClickListener {
 			final ScrollView scrollview = new ScrollView(this);
 			final TextView tv = new TextView(this);
 			tv.setText(Html.fromHtml(getString(R.string.credit_text)));
-			tv.setTextAlignment(TextView.TEXT_ALIGNMENT_CENTER);
+
 			tv.setMovementMethod(LinkMovementMethod.getInstance());
 			scrollview.addView(tv, params);
 
@@ -123,7 +142,7 @@ public class Main extends Activity implements OnClickListener {
 				}
 
 			});
-			popUp.update(0, 0, currentView.getWidth() - 100,
+			popUp.update(0, 0,  (int)(currentView.getWidth() *0.7),
 					currentView.getHeight());
 			return true;
 
