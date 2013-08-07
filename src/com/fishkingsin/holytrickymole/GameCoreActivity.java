@@ -15,9 +15,7 @@ import org.cocos2d.actions.interval.TintBy;
 import org.cocos2d.events.TouchDispatcher;
 import org.cocos2d.layers.ColorLayer;
 import org.cocos2d.layers.Layer;
-import org.cocos2d.menus.MenuItemFont;
-import org.cocos2d.menus.MenuItemImage;
-import org.cocos2d.menus.MenuItemLabel;
+import org.cocos2d.menus.*;
 import org.cocos2d.nodes.Director;
 import org.cocos2d.nodes.LabelAtlas;
 import org.cocos2d.nodes.RenderTexture;
@@ -223,15 +221,6 @@ public class GameCoreActivity extends Activity {
 			addChild(sprite, 0, kTagSprite);
 			sprite.setPosition((int)(s.width*0.5), (int)(s.height*0.5));
 			
-			
-			MenuItemFont.setFontSize(30);
-            MenuItemFont.setFontName("DroidSansMono");
-			 // Image Item
-//            MenuItem item2 = MenuItemImage.item("SendScoreButton.png", "SendScoreButtonPressed.png", this, "menuCallback2");
-//
-//            Menu menu = Menu.menu(item2);
-//            menu.alignItemsVertically();
-//            addChild(menu);
 
 		}
 
