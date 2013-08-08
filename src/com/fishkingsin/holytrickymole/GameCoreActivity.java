@@ -3,13 +3,17 @@ package com.fishkingsin.holytrickymole;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.nio.IntBuffer;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import javax.microedition.khronos.opengles.GL10;
+import javax.microedition.khronos.opengles.GL10Ext;
 
 import org.cocos2d.actions.ActionManager;
 import org.cocos2d.actions.base.RepeatForever;
 import org.cocos2d.actions.interval.IntervalAction;
+import org.cocos2d.actions.interval.MoveTo;
 import org.cocos2d.actions.interval.Sequence;
 import org.cocos2d.actions.interval.TintBy;
 import org.cocos2d.events.TouchDispatcher;
@@ -62,7 +66,7 @@ public class GameCoreActivity extends Activity {
 
 	private CCGLSurfaceView mGLSurfaceView;
 	private static Context mContext;
-//	private MainLayer mainLayer;
+	private MainLayer mainLayer;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		
@@ -98,8 +102,8 @@ public class GameCoreActivity extends Activity {
 		Director.sharedDirector().setAnimationInterval(1.0f / 60);
 
 		Scene scene = Scene.node();
-		//mainLayer = new MainLayer();
-		scene.addChild(new MainLayer(), 2);
+		mainLayer = new MainLayer();
+		scene.addChild(mainLayer, 2);
 
 		// Make the Scene active
 		Director.sharedDirector().runWithScene(scene);
@@ -132,7 +136,7 @@ public class GameCoreActivity extends Activity {
 
 		ActionManager.sharedManager().removeAllActions();
 		TextureManager.sharedTextureManager().removeAllTextures();
-		//mainLayer = null;
+		mainLayer = null;
 	}
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -192,11 +196,11 @@ public class GameCoreActivity extends Activity {
 					currentView.getHeight());
 			return true;
 		case R.id.saveimage:
-			saveScreen();
+			
 			return true;
 			
 		case R.id.facebook:
-//			mainLayer.saveScreen();
+
 			return true;
 			
 		default:
@@ -205,8 +209,11 @@ public class GameCoreActivity extends Activity {
 	}
 	static class MainLayer extends Layer {
 		static final int kTagSprite = 1;
-		Sprite sprite;	
+		Sprite sprite, selSprite;	
+		
 		RenderTexture target;
+		List<Sprite>moles;
+		private boolean bSave = false;
 		public MainLayer() {
 			CCSize s = Director.sharedDirector().winSize();
 
@@ -214,19 +221,34 @@ public class GameCoreActivity extends Activity {
 			SharedPreferences prefs = PreferenceManager
 					.getDefaultSharedPreferences(mContext);
 			sprite = Sprite.sprite(prefs.getString(mContext.getString(R.string.keyImageName), "grossini.png"));
-			sprite.setScale(s.width/sprite.getWidth());
+			float scale = s.width/sprite.getWidth();
+			sprite.setScale(scale);
+			
+			
+			
 			Layer layer = ColorLayer.node(new CCColor4B(93, 113, 112, 255));
 			addChild(layer, -1);
 
 			addChild(sprite, 0, kTagSprite);
 			sprite.setPosition((int)(s.width*0.5), (int)(s.height*0.5));
-			
-
+			moles = new ArrayList<Sprite>();
+			for(int  i= 0 ;i < 10 ; i++)
+			{
+				moles.add(Sprite.sprite("mole01@2x.png"));
+				
+				moles.get(i).setPosition((int)(s.width*0.5), 0);
+				addChild(moles.get(i), 0, i+1);
+				moles.get(i).setScale(scale);
+				moles.get(i).runAction(MoveTo.action(1.0f, (int)(s.width*0.5)+((i-5)*100) , s.height/2));
+			}
+			bSave = true;
 		}
 
 		 @Override
 		 public boolean ccTouchesBegan(MotionEvent event) {
-		
+			 CCPoint touchPoint =  Director.sharedDirector().convertToGL(event.getX(),
+						event.getY());
+			 selectSpriteForTouch(touchPoint);
 		
 			 return TouchDispatcher.kEventHandled;
 		 }
@@ -235,62 +257,56 @@ public class GameCoreActivity extends Activity {
 			// convert event location to CCPoint
 			CCPoint p = Director.sharedDirector().convertToGL(event.getX(),
 					event.getY());
-
+			if(selSprite!=null)
+			{
+				selSprite.setPosition(p.x, p.y);
+			}
 
 			return true;
 
 		}
 		@Override
 		public boolean ccTouchesEnded(MotionEvent event) {
+			selSprite = null;
+			
 	        return TouchDispatcher.kEventIgnored;  // TODO Auto-generated method stub
 	    }
-
-
+		void selectSpriteForTouch( CCPoint touchLocation ){
+		    Sprite newSprite = null;
+		    
+		    for (Sprite sprite : moles) {
+		    	
+		        if (sprite.getBoundingBox().contains(touchLocation.x,touchLocation.y)) {            
+		            newSprite = sprite;
+		            break;
+		        }
+		    }    
+		    if (newSprite != selSprite) {
+		                 
+		        selSprite = newSprite;
+		    }
+		    
+		}
+		@Override
+		public void draw(GL10 gl) {
+	        // Do nothing by default
+			if(bSave)
+			{
+				//TO-DO
+//				CCSize s = Director.sharedDirector().winSize();
+//				RenderTexture rt = RenderTexture.renderTexture((int)(s.width), (int)(s.height));
+//				rt.begin();
+//				rt.clear(0,0,0,1);
+//				this.visit(gl);
+//				rt.end();
+//				rt.saveBuffer("/sdcard/test.jpg");
+				bSave = false;
+			}
+			super.draw(gl);
+	    }
 	}
-	public static Bitmap SavePixels(int x, int y, int w, int h, GL10 gl)
-	{  
-	     int b[]=new int[w*(y+h)];
-	     int bt[]=new int[w*h];
-	     IntBuffer ib=IntBuffer.wrap(b);
-	     ib.position(0);
-	     gl.glReadPixels(x, 0, w, y+h, GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, ib);
-
-	     for(int i=0, k=0; i<h; i++, k++)
-	     {//remember, that OpenGL bitmap is incompatible with Android bitmap
-	      //and so, some correction need.        
-	          for(int j=0; j<w; j++)
-	          {
-	               int pix=b[i*w+j];
-	               int pb=(pix>>16)&0xff;
-	               int pr=(pix<<16)&0x00ff0000;
-	               int pix1=(pix&0xff00ff00) | pr | pb;
-	               bt[(h-k-1)*w+j]=pix1;
-	          }
-	     }
-
-	    Bitmap sb = Bitmap.createBitmap(bt, w, h, Bitmap.Config.ARGB_8888); 
-	    return sb;
-	}
-	public void saveScreen()
-	{
-//		Bitmap bmp = SavePixels(0, 0, 800, 400, Director.sharedDirector().getOpenGLView());
-//
-//        File file = new File("/sdcard/test.jpg");
-//        try
-//        {
-//            file.createNewFile();
-//            FileOutputStream fos = new FileOutputStream(file);
-//            bmp.compress(CompressFormat.JPEG, 100, fos);
-//
-//            Toast.makeText(getApplicationContext(), "Image Saved", 0).show();
-//            Log.i("Menu Save Button", "Image saved as JPEG");
-//        }
-//
-//        catch (Exception e)
-//        {
-//            e.printStackTrace();
-//        }
+	
 
         
-	}
+	
 }
