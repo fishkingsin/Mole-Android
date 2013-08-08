@@ -261,8 +261,8 @@ containing a value of this type.
         public static final int tse_holy_tricky_male_thumb=0x7f02003d;
     }
     public static final class id {
-        public static final int FrameLayout01=0x7f070020;
-        public static final int ImageView01=0x7f07001e;
+        public static final int FrameLayout01=0x7f07001f;
+        public static final int ImageView01=0x7f070024;
         public static final int buttonLogin=0x7f070019;
         public static final int buttonLogout=0x7f07001a;
         public static final int buttonPostPhoto=0x7f07001b;
@@ -289,24 +289,24 @@ containing a value of this type.
         public static final int credit=0x7f07002b;
         public static final int editText1=0x7f070025;
         public static final int facebook=0x7f07002d;
-        public static final int facebook_share_textfield=0x7f07001f;
-        public static final int gridview1=0x7f070022;
-        public static final int gridview2=0x7f070024;
-        public static final int imageView1=0x7f070003;
+        public static final int facebook_linearlyout=0x7f07001d;
+        public static final int facebook_share_textfield=0x7f07001e;
+        public static final int gridview1=0x7f070021;
+        public static final int gridview2=0x7f070023;
         public static final int large=0x7f070002;
         public static final int message=0x7f070028;
         public static final int normal=0x7f070001;
         public static final int picker_subtitle=0x7f070015;
+        public static final int saved_image=0x7f070003;
         public static final int saveimage=0x7f07002c;
         public static final int search_box=0x7f070014;
         public static final int small=0x7f070000;
         public static final int spinnerImageView=0x7f070027;
         public static final int startbutton=0x7f070026;
-        public static final int tab1=0x7f070021;
-        public static final int tab2=0x7f070023;
+        public static final int tab1=0x7f070020;
+        public static final int tab2=0x7f070022;
         public static final int tab_layout=0x7f070029;
         public static final int text=0x7f07002a;
-        public static final int titlebar_textview=0x7f07001d;
     }
     public static final class layout {
         public static final int background_layout=0x7f030000;
@@ -355,6 +355,7 @@ containing a value of this type.
         public static final int activity_scenetest=0x7f05000c;
         public static final int activity_spritestest=0x7f05000d;
         public static final int activity_transitionstest=0x7f05000e;
+        public static final int app_id=0x7f050037;
         public static final int app_name=0x7f050000;
         public static final int com_facebook_choose_friends=0x7f050021;
         public static final int com_facebook_dialogloginactivity_ok_button=0x7f050012;
@@ -382,8 +383,8 @@ containing a value of this type.
         public static final int com_facebook_usersettingsfragment_logged_in=0x7f05001b;
         public static final int com_facebook_usersettingsfragment_not_logged_in=0x7f05001c;
         public static final int credit=0x7f050032;
-        public static final int credit_text=0x7f050037;
-        public static final int dismiss=0x7f050038;
+        public static final int credit_text=0x7f050038;
+        public static final int dismiss=0x7f050039;
         public static final int dummy_button=0x7f05002b;
         public static final int dummy_content=0x7f05002c;
         public static final int facebook=0x7f050036;

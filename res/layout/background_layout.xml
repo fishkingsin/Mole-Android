@@ -5,7 +5,7 @@
     android:background="#5D7170" >
 
     <ImageView
-        android:id="@+id/imageView1"
+        android:id="@+id/saved_image"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:src="@drawable/background" />

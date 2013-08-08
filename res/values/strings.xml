@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
     <string name="app_name">點滴在癦頭</string>
     <string name="dummy_button">Dummy Button</string>
@@ -14,6 +14,7 @@
     <string name="keyImageName">keyImageName</string>
     <string name="saveimage">Save Image</string>
     <string name="facebook">Facebook</string>
+    <string name="app_id">377324959056043</string>
     <string name="credit_text">
 <![CDATA[<html>
 	    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
