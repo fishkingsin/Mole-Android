@@ -23,6 +23,7 @@ import org.cocos2d.actions.interval.TintBy;
 import org.cocos2d.events.TouchDispatcher;
 import org.cocos2d.layers.ColorLayer;
 import org.cocos2d.layers.Layer;
+import org.cocos2d.layers.MultiplexLayer;
 import org.cocos2d.menus.*;
 import org.cocos2d.nodes.CocosNode;
 import org.cocos2d.nodes.Director;
@@ -285,7 +286,11 @@ public class GameCoreActivity extends Activity implements OnCancelListener{
 		RenderTexture target;
 		List<Sprite> moles;
 		private boolean bSave = false;
-
+		int curentMoleIndex = 0;
+		
+		MenuItemSprite item1;
+		MenuItemSprite item2;
+		
 		public MainLayer() {
 			CCSize s = Director.sharedDirector().winSize();
 			mainNode = CocosNode.node();
@@ -306,17 +311,94 @@ public class GameCoreActivity extends Activity implements OnCancelListener{
 			for (int i = 0; i < 10; i++) {
 				moles.add(Sprite.sprite("mole01@2x.png"));
 
-				moles.get(i).setPosition((int) (s.width * 0.5), 0);
+				moles.get(i).setPosition((int) (s.width * 0.5), -50);
 				mainNode.addChild(moles.get(i), 0, i + 1);
 				moles.get(i).setScale(scale);
-				moles.get(i).runAction(
-						MoveTo.action(1.0f, (int) (s.width * 0.5)
-								+ ((i - 5) * 100), s.height / 2));
+//				moles.get(i).runAction(
+//						MoveTo.action(1.0f, (int) (s.width * 0.5)
+//								+ ((i - 5) * 100), s.height / 2));
 			}
 
 			addChild(mainNode);
-		}
+			
+			
+			Sprite itemSprite1 = Sprite.sprite("button_short_normal@2x.png");
+			Sprite itemSprite2 = Sprite.sprite("button_short_select@2x.png");
+			Sprite itemSprite3 = Sprite.sprite("button_short_disable@2x.png");
+			Sprite itemSprite4 = Sprite.sprite("button_short_normal@2x.png");
+			Sprite itemSprite5 = Sprite.sprite("button_short_select@2x.png");
+			Sprite itemSprite6 = Sprite.sprite("button_short_disable@2x.png");
+			
+			item1 = MenuItemAtlasSprite.item(itemSprite1, itemSprite2, itemSprite3, this, "addMole");
+			item2 = MenuItemAtlasSprite.item(itemSprite4, itemSprite5, itemSprite6, this, "minusMole");
+			
+			
+//			LabelAtlas labelAtlas = LabelAtlas.label("Add", "button_short@2x.png", 16, 24, '+');
+//            MenuItemLabel item1 = MenuItemLabel.item(labelAtlas, this, "addMole");
+//            item1.setDisabledColor(new CCColor3B(32, 32, 64));
+//            item1.setColor(new CCColor3B(200, 200, 255));
+//            
+//            LabelAtlas labelAtlas2 = LabelAtlas.label("Minus", "button_short@2x.png", 16, 24, '-');
+//            MenuItemLabel item2 = MenuItemLabel.item(labelAtlas2, this, "minusMole");
+//            item2.setDisabledColor(new CCColor3B(32, 32, 64));
+//            item2.setColor(new CCColor3B(200, 200, 255));
+            
+//            LabelAtlas labelAtlas3 = LabelAtlas.label("0123456789", "fps_images.png", 16, 24, '.');
+//            MenuItemLabel item3 = MenuItemLabel.item(labelAtlas3, this, "menuCallbackDisabled");
+//            item3.setDisabledColor(new CCColor3B(32, 32, 64));
+//            item3.setColor(new CCColor3B(200, 200, 255));
+//			MenuItemFont item1 = MenuItemFont.item("Replace Scene", this, "onReplaceScene");
+//            MenuItemFont item2 = MenuItemFont.item("Replace Scene Transition", this, "onReplaceSceneTransition");
+//            MenuItemFont item3 = MenuItemFont.item("Go Back", this, "onGoBack");
 
+//            Menu menu = Menu.menu(item1, item2, item3);
+			
+			org.cocos2d.menus.Menu menu = org.cocos2d.menus.Menu.menu(item2,item1);
+			//menu.alignItemsVertically();
+			menu.alignItemsHorizontally(10);
+			menu.setPosition(menu.getPositionX(), 0);
+			addChild(menu);
+		}
+		public void menuCallback2() {
+            Log.d("MainLayer" , "menuCallback2 ");
+        }
+		public void addMole()
+		{
+			 Log.d("MainLayer" , "addMole ");
+			
+			if(curentMoleIndex<moles.size())	
+			{
+				CCSize s = Director.sharedDirector().winSize();
+				
+				moles.get(curentMoleIndex).runAction(
+				MoveTo.action(1.0f, (int) (s.width * 0.5)
+						, s.height / 2));
+				curentMoleIndex++;
+			}
+			if(curentMoleIndex >= moles.size())
+			{
+				curentMoleIndex = moles.size()-1;
+				//disable addButton;
+			}
+			
+		}
+		public void minusMole()
+		{
+			 Log.d("MainLayer" , "minusMole ");
+			
+			if(curentMoleIndex>=0)	
+			{
+				//enable minusButton;
+				CCSize s = Director.sharedDirector().winSize();
+				moles.get(curentMoleIndex).setPosition((int) (s.width * 0.5), -50);
+				curentMoleIndex--;
+			}
+			if(curentMoleIndex < 0)
+			{
+				curentMoleIndex = 0;
+				//disable minusButton;
+			}
+		}
 		@Override
 		public boolean ccTouchesBegan(MotionEvent event) {
 			CCPoint touchPoint = Director.sharedDirector().convertToGL(
@@ -389,7 +471,7 @@ public class GameCoreActivity extends Activity implements OnCancelListener{
 		public void saveBitmap(Bitmap bmp) {
 			
 			//File file = new File(Environment.getExternalStorageDirectory().getPath()+"test.jpg");
-			File file = new File("	/sdcard/test.jpg");
+			File file = new File("/sdcard/test.jpg");
 			try {
 				file.createNewFile();
 				FileOutputStream fos = new FileOutputStream(file);
@@ -531,6 +613,7 @@ public class GameCoreActivity extends Activity implements OnCancelListener{
 							if (user != null) {
 								Log.d("Facebook", "Login Sucessful with Username:" + user.getName());
 							}
+							Log.v("Facebook",  response.getError().getErrorMessage());
 						}
 					});
 				}
