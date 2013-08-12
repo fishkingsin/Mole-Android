@@ -364,7 +364,7 @@ public class GameCoreActivity extends Activity implements OnCancelListener{
         }
 		public void addMole()
 		{
-			 Log.d("MainLayer" , "addMole ");
+			 Log.d("MainLayer" , "addMole curentMoleIndex:"+String.valueOf(curentMoleIndex));
 			
 			if(curentMoleIndex<moles.size())	
 			{
@@ -384,12 +384,13 @@ public class GameCoreActivity extends Activity implements OnCancelListener{
 		}
 		public void minusMole()
 		{
-			 Log.d("MainLayer" , "minusMole ");
+			 Log.d("MainLayer" , "minusMole curentMoleIndex:"+String.valueOf(curentMoleIndex));
 			
-			if(curentMoleIndex>=0)	
+			if(curentMoleIndex>-1)	
 			{
 				//enable minusButton;
 				CCSize s = Director.sharedDirector().winSize();
+				if(moles.get(curentMoleIndex).isRunning())moles.get(curentMoleIndex).stopAllActions();
 				moles.get(curentMoleIndex).setPosition((int) (s.width * 0.5), -50);
 				curentMoleIndex--;
 			}
