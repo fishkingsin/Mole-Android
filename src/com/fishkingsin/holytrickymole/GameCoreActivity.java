@@ -50,6 +50,7 @@ import com.facebook.model.GraphObject;
 import com.facebook.model.GraphUser;
 
 
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothDevice;
@@ -63,6 +64,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Bitmap.CompressFormat;
 import android.os.Bundle;
 import android.os.Environment;
@@ -115,10 +117,11 @@ public class GameCoreActivity extends Activity implements OnCancelListener{
 		// new AlertDialog.Builder(this).setTitle("Welcome")
 		// .setMessage("Click on the screen to move and rotate Grossini")
 		// .setPositiveButton("Start", null).show();
-
+		getHashKey();
 		mGLSurfaceView = new CCGLSurfaceView(this);
 
 		setContentView(mGLSurfaceView);
+		
 	}
 
 	@Override
@@ -331,7 +334,7 @@ public class GameCoreActivity extends Activity implements OnCancelListener{
 			
 			item1 = MenuItemAtlasSprite.item(itemSprite1, itemSprite2, itemSprite3, this, "addMole");
 			item2 = MenuItemAtlasSprite.item(itemSprite4, itemSprite5, itemSprite6, this, "minusMole");
-			
+				
 			
 //			LabelAtlas labelAtlas = LabelAtlas.label("Add", "button_short@2x.png", 16, 24, '+');
 //            MenuItemLabel item1 = MenuItemLabel.item(labelAtlas, this, "addMole");
@@ -343,20 +346,17 @@ public class GameCoreActivity extends Activity implements OnCancelListener{
 //            item2.setDisabledColor(new CCColor3B(32, 32, 64));
 //            item2.setColor(new CCColor3B(200, 200, 255));
             
-//            LabelAtlas labelAtlas3 = LabelAtlas.label("0123456789", "fps_images.png", 16, 24, '.');
-//            MenuItemLabel item3 = MenuItemLabel.item(labelAtlas3, this, "menuCallbackDisabled");
-//            item3.setDisabledColor(new CCColor3B(32, 32, 64));
-//            item3.setColor(new CCColor3B(200, 200, 255));
+			MenuItemFont item3 = MenuItemFont.item("I toggle enable items", this, "menuCallbackEnable");
 //			MenuItemFont item1 = MenuItemFont.item("Replace Scene", this, "onReplaceScene");
 //            MenuItemFont item2 = MenuItemFont.item("Replace Scene Transition", this, "onReplaceSceneTransition");
 //            MenuItemFont item3 = MenuItemFont.item("Go Back", this, "onGoBack");
 
 //            Menu menu = Menu.menu(item1, item2, item3);
 			
-			org.cocos2d.menus.Menu menu = org.cocos2d.menus.Menu.menu(item2,item1);
+			org.cocos2d.menus.Menu menu = org.cocos2d.menus.Menu.menu(item2,item1,item3);
 			//menu.alignItemsVertically();
 			menu.alignItemsHorizontally(10);
-			menu.setPosition(menu.getPositionX(), 0);
+			menu.setPosition(menu.getPositionX(), item1.getHeight());
 			addChild(menu);
 		}
 		public void menuCallback2() {
@@ -521,7 +521,6 @@ public class GameCoreActivity extends Activity implements OnCancelListener{
 			return sb;
 		}
 	}
-//-------------------------------------------------------------------------------------------------------------------
 	ProgressHUD mProgressHUD; 
     private enum PendingAction {
         NONE,
@@ -541,6 +540,7 @@ public class GameCoreActivity extends Activity implements OnCancelListener{
     };
 	
     private void onSessionStateChange(Session session, SessionState state, Exception exception) {
+    	Log.d("Facebook","onSessionStateChange "+state.toString() );
         if (pendingAction != PendingAction.NONE && (exception instanceof FacebookOperationCanceledException || exception instanceof FacebookAuthorizationException)) { 
         	//If the user wants to post photo or update status but the permission is not granted by user
         	new AlertDialog.Builder(GameCoreActivity.this)
@@ -555,6 +555,7 @@ public class GameCoreActivity extends Activity implements OnCancelListener{
     }
     
     private void handlePendingAction() {
+    	Log.d("Facebook","handlePendingAction");
         PendingAction previouslyPendingAction = pendingAction;
         // These actions may re-set pendingAction if they are still pending, but we assume they
         // will succeed.
@@ -562,7 +563,7 @@ public class GameCoreActivity extends Activity implements OnCancelListener{
 
         switch (previouslyPendingAction) {
             case POST_PHOTO:
-                postPhoto(bitmap);
+                postPhoto();
                 break;
             case POST_STATUS_UPDATE:
                 postText();
@@ -575,12 +576,12 @@ public class GameCoreActivity extends Activity implements OnCancelListener{
         }
     }
     
-	@SuppressWarnings("unused")
+//	@SuppressWarnings("unused")
 	private void getHashKey(){
 		//Use to retrieve the hash key needed for the facebook app. Compiling and the actual apk have different hash key.
 	    PackageInfo info;
 	    try {
-	        info = getPackageManager().getPackageInfo("com.example.socialnetwork", PackageManager.GET_SIGNATURES);
+	        info = getPackageManager().getPackageInfo("com.fishkingsin.holytrickymole", PackageManager.GET_SIGNATURES);
 	        for (Signature signature : info.signatures) {
 	            MessageDigest md;
 	            md = MessageDigest.getInstance("SHA");
@@ -614,7 +615,6 @@ public class GameCoreActivity extends Activity implements OnCancelListener{
 							if (user != null) {
 								Log.d("Facebook", "Login Sucessful with Username:" + user.getName());
 							}
-							Log.v("Facebook",  response.getError().getErrorMessage());
 						}
 					});
 				}
@@ -641,7 +641,7 @@ public class GameCoreActivity extends Activity implements OnCancelListener{
         performPublish(PendingAction.POST_PHOTO);
     }
 	
-	private void postPhoto(Bitmap bitmap){
+	private void postPhoto(){
 		
 		
 		
@@ -726,6 +726,8 @@ public class GameCoreActivity extends Activity implements OnCancelListener{
         Session session = Session.getActiveSession();
         return session != null && session.getPermissions().contains("publish_actions");
     }
+	    
+
 
 	@Override
 	public void onCancel(DialogInterface dialog) {
