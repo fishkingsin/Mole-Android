@@ -48,6 +48,7 @@ import com.longevitysoft.android.xml.plist.domain.PList;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -75,10 +76,6 @@ import android.widget.EditText;
 public class GameCoreActivity extends Activity implements OnCancelListener {
 	private static final String LOG_TAG = GameCoreActivity.class
 			.getSimpleName();
-	private static final int SAVED_IMAGE = 0x13;
-
-	private static final boolean DEBUG = true;
-
 	private CCGLSurfaceView mGLSurfaceView;
 	private static Context mContext;
 	private MainLayer mainLayer;
@@ -125,14 +122,29 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 		MyListener myListener = new MyListener() {
 
 			@Override
-			public void MyListenerDone() {
+			public void PostFacebook() {
 				// TODO Auto-generated method stub
 				runOnUiThread(new Runnable() {
 
 					@Override
 					public void run() {
 						// TODO Auto-generated method stub
+
 						onClickPostPhoto();
+					}
+				});
+			}
+
+			@Override
+			public void SavedImage() {
+				// TODO Auto-generated method stub
+				runOnUiThread(new Runnable() {
+
+					@Override
+					public void run() {
+						new AlertDialog.Builder(GameCoreActivity.this)
+								.setTitle("Image Save").setMessage("Woohoo")
+								.setPositiveButton("OK", null).show();
 					}
 				});
 			}
@@ -273,6 +285,8 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 		private boolean bSave = false;
 		int curentMoleIndex = 0;
 
+		private boolean bPostFB = false;
+
 		public MainLayer(MyListener myListener) {
 			CCSize s = Director.sharedDirector().winSize();
 			mainNode = CocosNode.node();
@@ -316,15 +330,17 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 					itemSprite5, itemSprite6, this, "minusMole");
 			MenuItemSprite item3 = MenuItemAtlasSprite.item(itemSprite4,
 					itemSprite5, itemSprite6, this, "FacebookAction");
+			MenuItemSprite item4 = MenuItemAtlasSprite.item(itemSprite4,
+					itemSprite5, itemSprite6, this, "SaveImageToGallery");
 
-			org.cocos2d.menus.Menu menu = org.cocos2d.menus.Menu.menu(item3,
-					item2, item1);
+			org.cocos2d.menus.Menu menu = org.cocos2d.menus.Menu.menu(item4,
+					item3, item2, item1);
 			// menu.alignItemsVertically();
 			menu.alignItemsHorizontally(10);
-			menu.setPosition(menu.getPositionX(), 0);
+			menu.setPosition(menu.getPositionX(), item1.getHeight()*0.5f);
 			addChild(menu);
 			this.myListener = myListener;
-			
+
 			setupMole();
 		}
 
@@ -332,14 +348,14 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 			// TODO Auto-generated method stub
 			PListXMLParser parser = new PListXMLParser();
 			PListXMLHandler pHandler = new PListXMLHandler();
-			PListParserListener parseListener = new PListParserListener(){
-				int count = 0; 
+			PListParserListener parseListener = new PListParserListener() {
+
 				@Override
 				public void onPListParseDone(PList pList, ParseMode mode) {
-					
+
 				}
-				
-			};	
+
+			};
 			pHandler.setParseListener(parseListener);
 			parser.setHandler(pHandler);
 			AssetManager am = mContext.getAssets();
@@ -350,8 +366,7 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}
-			catch (Exception e) {
+			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -359,13 +374,21 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 
 		public void FacebookAction() {
 			bSave = true;
-
+			bPostFB = true;
 			// onClickPostPhoto();
 			Log.d("MainLayer", "FacebookAction ");
 		}
 
+		public void SaveImageToGallery() {
+			bSave = true;
+			Log.d("MainLayer", "SaveImageToGallery ");
+		}
+
 		public static interface MyListener {
-			public void MyListenerDone();
+
+			public void PostFacebook();
+
+			public void SavedImage();
 		}
 
 		private MyListener myListener;
@@ -486,7 +509,13 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 					bitmap = SavePixels(0, 0, (int) (s.width),
 							(int) (s.height), gl);
 					saveBitmap(bitmap);
-					myListener.MyListenerDone();
+					if (bPostFB) {
+						bPostFB = false;
+						myListener.PostFacebook();
+					} else {
+
+						myListener.SavedImage();
+					}
 
 				} catch (Exception e) {
 					Log.e("SaveImage", e.toString());
@@ -497,9 +526,6 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 		}
 
 		public void saveBitmap(Bitmap bmp) {
-
-			// File file = new
-			// File(Environment.getExternalStorageDirectory().getPath()+"test.jpg");
 			File file = new File("/sdcard/test.jpg");
 			try {
 				file.createNewFile();
@@ -508,15 +534,6 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 
 				bSaved = true;
 
-				// Bundle mBundle = new Bundle();
-				// Message msg = Message.obtain(mHandler, SAVED_IMAGE);
-				// mBundle.putParcelable("Bitmap", bmp);
-				// msg.setData(mBundle);
-				// msg.sendToTarget();
-
-				// Toast.makeText(mContext.getApplicationContext(),
-				// "Image Saved", 0).show();
-				// Log.i("Menu Save Button", "Image saved as JPEG");
 			}
 
 			catch (Exception e) {
@@ -689,6 +706,8 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 		if (hasPublishPermission()) {
 			// Bitmap image = BitmapFactory.decodeResource(this.getResources(),
 			// R.drawable.icon);
+			mProgressHUD = ProgressHUD.show(GameCoreActivity.this, "Posting",
+					true, true, this);
 			Request request = Request.newUploadPhotoRequest(
 					Session.getActiveSession(), bitmap, new Request.Callback() {
 						@Override
@@ -700,7 +719,7 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 					});
 			Bundle params = request.getParameters();
 			params.putString("message", "description  goes here");
-			
+
 			request.executeAsync();
 		} else {
 			pendingAction = PendingAction.POST_PHOTO;
@@ -753,12 +772,14 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 		String alertMessage = null;
 		if (error == null) {
 			title = "Success";
-			String id = result.cast(GraphObjectWithId.class).getId();
+			result.cast(GraphObjectWithId.class).getId();
 			alertMessage = "Sucessfully posted";// getString(R.string.successfully_posted_post,
 												// message, id);
+			mProgressHUD.dismiss();
 		} else {
 			title = "Error";
 			alertMessage = error.getErrorMessage();
+			mProgressHUD.dismiss();
 		}
 
 		new AlertDialog.Builder(this).setTitle(title).setMessage(alertMessage)
