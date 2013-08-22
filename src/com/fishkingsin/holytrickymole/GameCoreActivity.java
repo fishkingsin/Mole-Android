@@ -291,8 +291,6 @@ public class GameCoreActivity extends Activity implements OnCancelListener{
 		private boolean bSave = false;
 		int curentMoleIndex = 0;
 		
-		MenuItemSprite item1;
-		MenuItemSprite item2;
 		
 		public MainLayer() {
 			CCSize s = Director.sharedDirector().winSize();
@@ -332,38 +330,21 @@ public class GameCoreActivity extends Activity implements OnCancelListener{
 			Sprite itemSprite5 = Sprite.sprite("button_short_select@2x.png");
 			Sprite itemSprite6 = Sprite.sprite("button_short_disable@2x.png");
 			
-			item1 = MenuItemAtlasSprite.item(itemSprite1, itemSprite2, itemSprite3, this, "addMole");
-			item2 = MenuItemAtlasSprite.item(itemSprite4, itemSprite5, itemSprite6, this, "minusMole");
+			MenuItemSprite item1 = MenuItemAtlasSprite.item(itemSprite1, itemSprite2, itemSprite3, this, "addMole");
+			MenuItemSprite item2 = MenuItemAtlasSprite.item(itemSprite4, itemSprite5, itemSprite6, this, "minusMole");
+			MenuItemSprite item3 = MenuItemAtlasSprite.item(itemSprite4, itemSprite5, itemSprite6, this, "FacebookAction");
 				
 			
-//			LabelAtlas labelAtlas = LabelAtlas.label("Add", "button_short@2x.png", 16, 24, '+');
-//            MenuItemLabel item1 = MenuItemLabel.item(labelAtlas, this, "addMole");
-//            item1.setDisabledColor(new CCColor3B(32, 32, 64));
-//            item1.setColor(new CCColor3B(200, 200, 255));
-//            
-//            LabelAtlas labelAtlas2 = LabelAtlas.label("Minus", "button_short@2x.png", 16, 24, '-');
-//            MenuItemLabel item2 = MenuItemLabel.item(labelAtlas2, this, "minusMole");
-//            item2.setDisabledColor(new CCColor3B(32, 32, 64));
-//            item2.setColor(new CCColor3B(200, 200, 255));
-            
-//            LabelAtlas labelAtlas3 = LabelAtlas.label("0123456789", "fps_images.png", 16, 24, '.');
-//            MenuItemLabel item3 = MenuItemLabel.item(labelAtlas3, this, "menuCallbackDisabled");
-//            item3.setDisabledColor(new CCColor3B(32, 32, 64));
-//            item3.setColor(new CCColor3B(200, 200, 255));
-//			MenuItemFont item1 = MenuItemFont.item("Replace Scene", this, "onReplaceScene");
-//            MenuItemFont item2 = MenuItemFont.item("Replace Scene Transition", this, "onReplaceSceneTransition");
-//            MenuItemFont item3 = MenuItemFont.item("Go Back", this, "onGoBack");
-
-//            Menu menu = Menu.menu(item1, item2, item3);
 			
-			org.cocos2d.menus.Menu menu = org.cocos2d.menus.Menu.menu(item2,item1);
+			org.cocos2d.menus.Menu menu = org.cocos2d.menus.Menu.menu(item3,item2,item1);
 			//menu.alignItemsVertically();
 			menu.alignItemsHorizontally(10);
 			menu.setPosition(menu.getPositionX(), 0);
 			addChild(menu);
 		}
-		public void menuCallback2() {
-            Log.d("MainLayer" , "menuCallback2 ");
+		public void FacebookAction() {
+			onClickPostPhoto();
+            Log.d("MainLayer" , "FacebookAction ");
         }
 		public void addMole()
 		{
