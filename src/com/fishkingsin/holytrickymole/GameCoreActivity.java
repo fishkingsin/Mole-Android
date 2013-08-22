@@ -5,35 +5,24 @@ import java.io.FileOutputStream;
 import java.nio.IntBuffer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.List;
 
 import javax.microedition.khronos.opengles.GL10;
-import javax.microedition.khronos.opengles.GL10Ext;
-
 import org.cocos2d.actions.ActionManager;
-import org.cocos2d.actions.base.RepeatForever;
-import org.cocos2d.actions.interval.IntervalAction;
 import org.cocos2d.actions.interval.MoveTo;
-import org.cocos2d.actions.interval.Sequence;
-import org.cocos2d.actions.interval.TintBy;
 import org.cocos2d.events.TouchDispatcher;
 import org.cocos2d.layers.ColorLayer;
 import org.cocos2d.layers.Layer;
-import org.cocos2d.layers.MultiplexLayer;
 import org.cocos2d.menus.*;
 import org.cocos2d.nodes.CocosNode;
 import org.cocos2d.nodes.Director;
-import org.cocos2d.nodes.LabelAtlas;
 import org.cocos2d.nodes.RenderTexture;
 import org.cocos2d.nodes.Scene;
 import org.cocos2d.nodes.Sprite;
 import org.cocos2d.nodes.TextureManager;
 import org.cocos2d.opengl.CCGLSurfaceView;
-import org.cocos2d.types.CCColor3B;
 import org.cocos2d.types.CCColor4B;
 import org.cocos2d.types.CCPoint;
 import org.cocos2d.types.CCSize;
@@ -48,12 +37,9 @@ import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
 import com.facebook.model.GraphObject;
 import com.facebook.model.GraphUser;
-
-
-
+import com.fishkingsin.holytrickymole.GameCoreActivity.MainLayer.MyListener;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -64,36 +50,20 @@ import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Bitmap.CompressFormat;
 import android.os.Bundle;
-import android.os.Environment;
-import android.os.Handler;
-import android.os.Message;
 import android.preference.PreferenceManager;
-import android.provider.MediaStore;
-import android.text.Html;
-import android.text.method.LinkMovementMethod;
 import android.util.Base64;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.View.OnTouchListener;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
-import android.widget.ScrollView;
-import android.widget.TextView;
-import android.widget.Toast;
 
-public class GameCoreActivity extends Activity implements OnCancelListener{
+public class GameCoreActivity extends Activity implements OnCancelListener {
 	private static final String LOG_TAG = GameCoreActivity.class
 			.getSimpleName();
 	private static final int SAVED_IMAGE = 0x13;
@@ -103,8 +73,9 @@ public class GameCoreActivity extends Activity implements OnCancelListener{
 	private CCGLSurfaceView mGLSurfaceView;
 	private static Context mContext;
 	private MainLayer mainLayer;
-	public static Bitmap bitmap; 
+	public static Bitmap bitmap;
 	public static boolean bSaved = false;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 
@@ -121,7 +92,8 @@ public class GameCoreActivity extends Activity implements OnCancelListener{
 		mGLSurfaceView = new CCGLSurfaceView(this);
 
 		setContentView(mGLSurfaceView);
-		
+		uiHelper = new UiLifecycleHelper(this, callback);
+		uiHelper.onCreate(savedInstanceState);
 	}
 
 	@Override
@@ -141,7 +113,23 @@ public class GameCoreActivity extends Activity implements OnCancelListener{
 		Director.sharedDirector().setAnimationInterval(1.0f / 60);
 
 		Scene scene = Scene.node();
-		mainLayer = new MainLayer();
+		MyListener myListener = new MyListener() {
+
+			@Override
+			public void MyListenerDone() {
+				// TODO Auto-generated method stub
+				runOnUiThread(new Runnable() {
+
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						onClickPostPhoto();
+					}
+				});
+			}
+
+		};
+		mainLayer = new MainLayer(myListener);
 		scene.addChild(mainLayer, 2);
 
 		// Make the Scene active
@@ -152,15 +140,28 @@ public class GameCoreActivity extends Activity implements OnCancelListener{
 	@Override
 	public void onPause() {
 		super.onPause();
-
+		uiHelper.onPause();
 		Director.sharedDirector().pause();
 	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
-
+		uiHelper.onResume();
 		Director.sharedDirector().resume();
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		uiHelper.onSaveInstanceState(outState);
+
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		uiHelper.onActivityResult(requestCode, resultCode, data);
 	}
 
 	@Override
@@ -173,7 +174,7 @@ public class GameCoreActivity extends Activity implements OnCancelListener{
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-
+		uiHelper.onDestroy();
 		ActionManager.sharedManager().removeAllActions();
 		TextureManager.sharedTextureManager().removeAllTextures();
 		mainLayer = null;
@@ -189,110 +190,81 @@ public class GameCoreActivity extends Activity implements OnCancelListener{
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle item selection
-		switch (item.getItemId()) {
-		case R.id.credit:
-			final PopupWindow popUp = new PopupWindow(this);
-
-			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-					LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT,
-					Gravity.TOP);
-			final LinearLayout ll = new LinearLayout(this);
-			ll.setLayoutParams(params);
-			ll.setOrientation(LinearLayout.VERTICAL);
-
-			final ScrollView scrollview = new ScrollView(this);
-			final TextView tv = new TextView(this);
-			tv.setText(Html.fromHtml(getString(R.string.credit_text)));
-
-			tv.setMovementMethod(LinkMovementMethod.getInstance());
-			scrollview.addView(tv, params);
-
-			ll.addView(scrollview);
-
-			popUp.setContentView(ll);
-
-			final View currentView = this.getWindow().getDecorView()
-					.findViewById(android.R.id.content);
-			popUp.showAtLocation(currentView, Gravity.BOTTOM, 0, 0);
-
-			popUp.setFocusable(false);
-			popUp.setOutsideTouchable(true);
-			popUp.setTouchable(true);
-
-			popUp.setTouchInterceptor(new OnTouchListener() {
-
-				@Override
-				public boolean onTouch(View v, MotionEvent event) {
-					if (event.getAction() == MotionEvent.ACTION_OUTSIDE) {
-						popUp.dismiss();
-						return true;
-					}
-					return false;
-				}
-
-			});
-			popUp.update(0, 0, (int) (currentView.getWidth() * 0.7),
-					currentView.getHeight());
-			return true;
-		case R.id.saveimage:
-			mainLayer.bSave = true;
-			while(!bSaved)
-			{
-				try {
-					
-					Thread.sleep(100);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			bSaved = false;
-			Calendar timestamp = Calendar.getInstance();
-			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			MediaStore.Images.Media.insertImage(mContext.getContentResolver(), bitmap, format.format(timestamp.getTime()), "");
-			return true;
-
-		case R.id.facebook:
-			
-			mainLayer.bSave = true;
-			
-			
-			while(!bSaved)
-			{
-				try {
-					
-					Thread.sleep(100);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			bSaved = false;
-			onClickPostPhoto();
-//			Intent intent = new Intent(this, FacebookShareActivity.class);
-//			
-//			intent.putExtra("BitmapImage", bitmap);
-//			this.startActivity(intent);
-			
-			return true;
-
-		default:
-			return super.onOptionsItemSelected(item);
-		}
+		/*
+		 * switch (item.getItemId()) { case R.id.credit: final PopupWindow popUp
+		 * = new PopupWindow(this);
+		 * 
+		 * LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+		 * LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, Gravity.TOP);
+		 * final LinearLayout ll = new LinearLayout(this);
+		 * ll.setLayoutParams(params); ll.setOrientation(LinearLayout.VERTICAL);
+		 * 
+		 * final ScrollView scrollview = new ScrollView(this); final TextView tv
+		 * = new TextView(this);
+		 * tv.setText(Html.fromHtml(getString(R.string.credit_text)));
+		 * 
+		 * tv.setMovementMethod(LinkMovementMethod.getInstance());
+		 * scrollview.addView(tv, params);
+		 * 
+		 * ll.addView(scrollview);
+		 * 
+		 * popUp.setContentView(ll);
+		 * 
+		 * final View currentView = this.getWindow().getDecorView()
+		 * .findViewById(android.R.id.content);
+		 * popUp.showAtLocation(currentView, Gravity.BOTTOM, 0, 0);
+		 * 
+		 * popUp.setFocusable(false); popUp.setOutsideTouchable(true);
+		 * popUp.setTouchable(true);
+		 * 
+		 * popUp.setTouchInterceptor(new OnTouchListener() {
+		 * 
+		 * @Override public boolean onTouch(View v, MotionEvent event) { if
+		 * (event.getAction() == MotionEvent.ACTION_OUTSIDE) { popUp.dismiss();
+		 * return true; } return false; }
+		 * 
+		 * }); popUp.update(0, 0, (int) (currentView.getWidth() * 0.7),
+		 * currentView.getHeight()); return true; case R.id.saveimage:
+		 * mainLayer.bSave = true; while(!bSaved) { try {
+		 * 
+		 * Thread.sleep(100); } catch (InterruptedException e) { // TODO
+		 * Auto-generated catch block e.printStackTrace(); } } bSaved = false;
+		 * Calendar timestamp = Calendar.getInstance(); SimpleDateFormat format
+		 * = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		 * MediaStore.Images.Media.insertImage(mContext.getContentResolver(),
+		 * bitmap, format.format(timestamp.getTime()), ""); return true;
+		 * 
+		 * case R.id.facebook:
+		 * 
+		 * mainLayer.bSave = true;
+		 * 
+		 * 
+		 * while(!bSaved) { try {
+		 * 
+		 * Thread.sleep(100); } catch (InterruptedException e) { // TODO
+		 * Auto-generated catch block e.printStackTrace(); } } bSaved = false;
+		 * onClickPostPhoto(); // Intent intent = new Intent(this,
+		 * FacebookShareActivity.class); // // intent.putExtra("BitmapImage",
+		 * bitmap); // this.startActivity(intent);
+		 * 
+		 * return true;
+		 * 
+		 * default: return super.onOptionsItemSelected(item); }
+		 */
+		return super.onOptionsItemSelected(item);
 	}
 
 	static class MainLayer extends Layer {
 		static final int kTagSprite = 1;
-		
+
 		Sprite sprite, selSprite;
 		CocosNode mainNode;
 		RenderTexture target;
 		List<Sprite> moles;
 		private boolean bSave = false;
 		int curentMoleIndex = 0;
-		
-		
-		public MainLayer() {
+
+		public MainLayer(MyListener myListener) {
 			CCSize s = Director.sharedDirector().winSize();
 			mainNode = CocosNode.node();
 			isTouchEnabled_ = true;
@@ -315,75 +287,105 @@ public class GameCoreActivity extends Activity implements OnCancelListener{
 				moles.get(i).setPosition((int) (s.width * 0.5), -50);
 				mainNode.addChild(moles.get(i), 0, i + 1);
 				moles.get(i).setScale(scale);
-//				moles.get(i).runAction(
-//						MoveTo.action(1.0f, (int) (s.width * 0.5)
-//								+ ((i - 5) * 100), s.height / 2));
+				// moles.get(i).runAction(
+				// MoveTo.action(1.0f, (int) (s.width * 0.5)
+				// + ((i - 5) * 100), s.height / 2));
 			}
 
 			addChild(mainNode);
-			
-			
+
 			Sprite itemSprite1 = Sprite.sprite("button_short_normal@2x.png");
 			Sprite itemSprite2 = Sprite.sprite("button_short_select@2x.png");
 			Sprite itemSprite3 = Sprite.sprite("button_short_disable@2x.png");
 			Sprite itemSprite4 = Sprite.sprite("button_short_normal@2x.png");
 			Sprite itemSprite5 = Sprite.sprite("button_short_select@2x.png");
 			Sprite itemSprite6 = Sprite.sprite("button_short_disable@2x.png");
-			
-			MenuItemSprite item1 = MenuItemAtlasSprite.item(itemSprite1, itemSprite2, itemSprite3, this, "addMole");
-			MenuItemSprite item2 = MenuItemAtlasSprite.item(itemSprite4, itemSprite5, itemSprite6, this, "minusMole");
-			MenuItemSprite item3 = MenuItemAtlasSprite.item(itemSprite4, itemSprite5, itemSprite6, this, "FacebookAction");
-				
-			
-			
-			org.cocos2d.menus.Menu menu = org.cocos2d.menus.Menu.menu(item3,item2,item1);
-			//menu.alignItemsVertically();
+
+			MenuItemSprite item1 = MenuItemAtlasSprite.item(itemSprite1,
+					itemSprite2, itemSprite3, this, "addMole");
+			MenuItemSprite item2 = MenuItemAtlasSprite.item(itemSprite4,
+					itemSprite5, itemSprite6, this, "minusMole");
+			MenuItemSprite item3 = MenuItemAtlasSprite.item(itemSprite4,
+					itemSprite5, itemSprite6, this, "FacebookAction");
+
+			org.cocos2d.menus.Menu menu = org.cocos2d.menus.Menu.menu(item3,
+					item2, item1);
+			// menu.alignItemsVertically();
 			menu.alignItemsHorizontally(10);
 			menu.setPosition(menu.getPositionX(), 0);
 			addChild(menu);
+			this.myListener = myListener;
 		}
+
 		public void FacebookAction() {
-			onClickPostPhoto();
-            Log.d("MainLayer" , "FacebookAction ");
-        }
-		public void addMole()
-		{
-			 Log.d("MainLayer" , "addMole curentMoleIndex:"+String.valueOf(curentMoleIndex));
-			
-			if(curentMoleIndex<moles.size())	
-			{
+			bSave = true;
+
+			// onClickPostPhoto();
+			Log.d("MainLayer", "FacebookAction ");
+		}
+
+		public static interface MyListener {
+			public void MyListenerDone();
+		}
+
+		private MyListener myListener;
+
+		/**
+		 * @return the parseListener
+		 */
+		public MyListener getListener() {
+			return myListener;
+		}
+
+		/**
+		 * @param parseListener
+		 *            the parseListener to set
+		 */
+		public void setListener(MyListener myListener) {
+			this.myListener = myListener;
+		}
+
+		public void addMole() {
+			Log.d("MainLayer",
+					"addMole curentMoleIndex:"
+							+ String.valueOf(curentMoleIndex));
+
+			if (curentMoleIndex < moles.size()) {
 				CCSize s = Director.sharedDirector().winSize();
-				
-				moles.get(curentMoleIndex).runAction(
-				MoveTo.action(1.0f, (int) (s.width * 0.5)
-						, s.height / 2));
+
+				moles.get(curentMoleIndex)
+						.runAction(
+								MoveTo.action(1.0f, (int) (s.width * 0.5),
+										s.height / 2));
 				curentMoleIndex++;
 			}
-			if(curentMoleIndex >= moles.size())
-			{
-				curentMoleIndex = moles.size()-1;
-				//disable addButton;
+			if (curentMoleIndex >= moles.size()) {
+				curentMoleIndex = moles.size() - 1;
+				// disable addButton;
 			}
-			
+
 		}
-		public void minusMole()
-		{
-			 Log.d("MainLayer" , "minusMole curentMoleIndex:"+String.valueOf(curentMoleIndex));
-			
-			if(curentMoleIndex>-1)	
-			{
-				//enable minusButton;
+
+		public void minusMole() {
+			Log.d("MainLayer",
+					"minusMole curentMoleIndex:"
+							+ String.valueOf(curentMoleIndex));
+
+			if (curentMoleIndex > -1) {
+				// enable minusButton;
 				CCSize s = Director.sharedDirector().winSize();
-				if(moles.get(curentMoleIndex).isRunning())moles.get(curentMoleIndex).stopAllActions();
-				moles.get(curentMoleIndex).setPosition((int) (s.width * 0.5), -50);
+				if (moles.get(curentMoleIndex).isRunning())
+					moles.get(curentMoleIndex).stopAllActions();
+				moles.get(curentMoleIndex).setPosition((int) (s.width * 0.5),
+						-50);
 				curentMoleIndex--;
 			}
-			if(curentMoleIndex < 0)
-			{
+			if (curentMoleIndex < 0) {
 				curentMoleIndex = 0;
-				//disable minusButton;
+				// disable minusButton;
 			}
 		}
+
 		@Override
 		public boolean ccTouchesBegan(MotionEvent event) {
 			CCPoint touchPoint = Director.sharedDirector().convertToGL(
@@ -444,6 +446,7 @@ public class GameCoreActivity extends Activity implements OnCancelListener{
 					bitmap = SavePixels(0, 0, (int) (s.width),
 							(int) (s.height), gl);
 					saveBitmap(bitmap);
+					myListener.MyListenerDone();
 
 				} catch (Exception e) {
 					Log.e("SaveImage", e.toString());
@@ -454,22 +457,23 @@ public class GameCoreActivity extends Activity implements OnCancelListener{
 		}
 
 		public void saveBitmap(Bitmap bmp) {
-			
-			//File file = new File(Environment.getExternalStorageDirectory().getPath()+"test.jpg");
+
+			// File file = new
+			// File(Environment.getExternalStorageDirectory().getPath()+"test.jpg");
 			File file = new File("/sdcard/test.jpg");
 			try {
 				file.createNewFile();
 				FileOutputStream fos = new FileOutputStream(file);
 				bmp.compress(CompressFormat.JPEG, 100, fos);
-				
+
 				bSaved = true;
-				
-//				Bundle mBundle = new Bundle();
-//				Message msg = Message.obtain(mHandler, SAVED_IMAGE);
-//				mBundle.putParcelable("Bitmap", bmp);
-//				msg.setData(mBundle);
-//				msg.sendToTarget();
-				
+
+				// Bundle mBundle = new Bundle();
+				// Message msg = Message.obtain(mHandler, SAVED_IMAGE);
+				// mBundle.putParcelable("Bitmap", bmp);
+				// msg.setData(mBundle);
+				// msg.sendToTarget();
+
 				// Toast.makeText(mContext.getApplicationContext(),
 				// "Image Saved", 0).show();
 				// Log.i("Menu Save Button", "Image saved as JPEG");
@@ -505,213 +509,255 @@ public class GameCoreActivity extends Activity implements OnCancelListener{
 			return sb;
 		}
 	}
-	ProgressHUD mProgressHUD; 
-    private enum PendingAction {
-        NONE,
-        POST_PHOTO,
-        POST_STATUS_UPDATE
-    }
-    private PendingAction pendingAction = PendingAction.NONE;
-    private static final List<String> PERMISSIONS = Arrays.asList("publish_actions");
-    private UiLifecycleHelper uiHelper;
-    private Session.StatusCallback callback = new Session.StatusCallback() {
-        @Override
-        public void call(Session session, SessionState state, Exception exception) {
-            //handle the callback of Facebook
-            onSessionStateChange(session, state, exception);
-            Log.d("Facebook", "Callback");
-        }
-    };
-	
-    private void onSessionStateChange(Session session, SessionState state, Exception exception) {
-    	Log.d("Facebook","onSessionStateChange "+state.toString() );
-        if (pendingAction != PendingAction.NONE && (exception instanceof FacebookOperationCanceledException || exception instanceof FacebookAuthorizationException)) { 
-        	//If the user wants to post photo or update status but the permission is not granted by user
-        	new AlertDialog.Builder(GameCoreActivity.this)
-                    .setTitle("Fail")
-                    .setMessage("Unable to perform selected action because permissions were not granted.")
-                    .setPositiveButton("Ok", null)
-                    .show();
-            pendingAction = PendingAction.NONE;
-        } else if (state == SessionState.OPENED_TOKEN_UPDATED) {
-            handlePendingAction();
-        }
-    }
-    
-    private void handlePendingAction() {
-    	Log.d("Facebook","handlePendingAction");
-        PendingAction previouslyPendingAction = pendingAction;
-        // These actions may re-set pendingAction if they are still pending, but we assume they
-        // will succeed.
-        pendingAction = PendingAction.NONE;
 
-        switch (previouslyPendingAction) {
-            case POST_PHOTO:
-                postPhoto();
-                break;
-            case POST_STATUS_UPDATE:
-                postText();
-                break;
-			case NONE:
-				//Do Nothing
-				break;
-			default:
-				break;
-        }
-    }
-    
-//	@SuppressWarnings("unused")
-	private void getHashKey(){
-		//Use to retrieve the hash key needed for the facebook app. Compiling and the actual apk have different hash key.
-	    PackageInfo info;
-	    try {
-	        info = getPackageManager().getPackageInfo("com.fishkingsin.holytrickymole", PackageManager.GET_SIGNATURES);
-	        for (Signature signature : info.signatures) {
-	            MessageDigest md;
-	            md = MessageDigest.getInstance("SHA");
-	            md.update(signature.toByteArray());
-	            String something = new String(Base64.encode(md.digest(), 0));
-	            Log.e("hash key", something);
-	        }
-	    } catch (NameNotFoundException e1) {
-	        Log.e("name not found", e1.toString());
-	    } catch (NoSuchAlgorithmException e) {
-	        Log.e("no such an algorithm", e.toString());
-	    } catch (Exception e) {
-	        Log.e("exception", e.toString());
-	    }
+	ProgressHUD mProgressHUD;
+
+	private enum PendingAction {
+		NONE, POST_PHOTO, POST_STATUS_UPDATE
 	}
-	
-	private void facebookLogin(){
+
+	private PendingAction pendingAction = PendingAction.NONE;
+	private static final List<String> PERMISSIONS = Arrays
+			.asList("publish_actions");
+	private UiLifecycleHelper uiHelper;
+	private Session.StatusCallback callback = new Session.StatusCallback() {
+		@Override
+		public void call(Session session, SessionState state,
+				Exception exception) {
+			// handle the callback of Facebook
+			onSessionStateChange(session, state, exception);
+			Log.d("Facebook", "Callback");
+		}
+	};
+
+	private void onSessionStateChange(Session session, SessionState state,
+			Exception exception) {
+		Log.d("Facebook", "onSessionStateChange " + state.toString());
+		if (pendingAction != PendingAction.NONE
+				&& (exception instanceof FacebookOperationCanceledException || exception instanceof FacebookAuthorizationException)) {
+			// If the user wants to post photo or update status but the
+			// permission is not granted by user
+			new AlertDialog.Builder(GameCoreActivity.this)
+					.setTitle("Fail")
+					.setMessage(
+							"Unable to perform selected action because permissions were not granted.")
+					.setPositiveButton("Ok", null).show();
+			pendingAction = PendingAction.NONE;
+		} else if (state == SessionState.OPENED_TOKEN_UPDATED) {
+			handlePendingAction();
+		}
+	}
+
+	private void handlePendingAction() {
+		Log.d("Facebook", "handlePendingAction");
+		PendingAction previouslyPendingAction = pendingAction;
+		// These actions may re-set pendingAction if they are still pending, but
+		// we assume they
+		// will succeed.
+		pendingAction = PendingAction.NONE;
+
+		switch (previouslyPendingAction) {
+		case POST_PHOTO:
+			postPhoto();
+			break;
+		case POST_STATUS_UPDATE:
+			postText();
+			break;
+		case NONE:
+			// Do Nothing
+			break;
+		default:
+			break;
+		}
+	}
+
+	// @SuppressWarnings("unused")
+	private void getHashKey() {
+		// Use to retrieve the hash key needed for the facebook app. Compiling
+		// and the actual apk have different hash key.
+		PackageInfo info;
+		try {
+			info = getPackageManager().getPackageInfo(
+					"com.fishkingsin.holytrickymole",
+					PackageManager.GET_SIGNATURES);
+			for (Signature signature : info.signatures) {
+				MessageDigest md;
+				md = MessageDigest.getInstance("SHA");
+				md.update(signature.toByteArray());
+				String something = new String(Base64.encode(md.digest(), 0));
+				Log.e("hash key", something);
+			}
+		} catch (NameNotFoundException e1) {
+			Log.e("name not found", e1.toString());
+		} catch (NoSuchAlgorithmException e) {
+			Log.e("no such an algorithm", e.toString());
+		} catch (Exception e) {
+			Log.e("exception", e.toString());
+		}
+	}
+
+	private void facebookLogin() {
 		Log.d("Facebook", "Start Facebook Login");
 		Session.openActiveSession(this, true, new Session.StatusCallback() {
-			 
+
 			// callback when session changes state
 			@Override
-			public void call(Session session, SessionState state, Exception exception) {
+			public void call(Session session, SessionState state,
+					Exception exception) {
 				if (session.isOpened()) {
 					// make request to the /me API
-					Request.executeMeRequestAsync(session, new Request.GraphUserCallback() {
+					Request.executeMeRequestAsync(session,
+							new Request.GraphUserCallback() {
 
-						// callback after Graph API response with user object
-						@Override
-						public void onCompleted(GraphUser user, Response response) {
-							if (user != null) {
-								Log.d("Facebook", "Login Sucessful with Username:" + user.getName());
-							}
-						}
-					});
+								// callback after Graph API response with user
+								// object
+								@Override
+								public void onCompleted(GraphUser user,
+										Response response) {
+									if (user != null) {
+										Log.d("Facebook",
+												"Login Sucessful with Username:"
+														+ user.getName());
+									}
+								}
+							});
 				}
 			}
 		});
 	}
-	
-	private void facebookLogout(){
+
+	private void facebookLogout() {
 		Log.d("Facebook", "Start Facebook Logout");
-	    if (Session.getActiveSession() != null) {
-	        Session.getActiveSession().closeAndClearTokenInformation();
-	    }
+		if (Session.getActiveSession() != null) {
+			Session.getActiveSession().closeAndClearTokenInformation();
+		}
 
-	    Session.setActiveSession(null);
-	    Log.d("Facebook", "Logout");
+		Session.setActiveSession(null);
+		Log.d("Facebook", "Logout");
 
 	}
-	
-    private void onClickPostStatusUpdate() {
-        performPublish(PendingAction.POST_STATUS_UPDATE);
-    }
-    
-    private void onClickPostPhoto() {
-        performPublish(PendingAction.POST_PHOTO);
-    }
-	
-	private void postPhoto(){
-		
-		
-		
+
+	private void onClickPostStatusUpdate() {
+		performPublish(PendingAction.POST_STATUS_UPDATE);
+	}
+
+	private void onClickPostPhoto() {
+		performPublish(PendingAction.POST_PHOTO);
+	}
+
+	private void postPhoto() {
 		if (hasPublishPermission()) {
-			mProgressHUD = ProgressHUD.show(GameCoreActivity.this,"Posting", true,true,this);
-            Request request = Request.newUploadPhotoRequest(Session.getActiveSession(), bitmap, new Request.Callback() {
-                @Override
-                public void onCompleted(Response response) {
-                    showPublishResult("Photo Post", response.getGraphObject(), response.getError());
-                }
-            });
-            request.executeAsync();
-        }
+			// Bitmap image = BitmapFactory.decodeResource(this.getResources(),
+			// R.drawable.icon);
+			Request request = Request.newUploadPhotoRequest(
+					Session.getActiveSession(), bitmap, new Request.Callback() {
+						@Override
+						public void onCompleted(Response response) {
+							showPublishResult("Photo Post",
+									response.getGraphObject(),
+									response.getError());
+						}
+					});
+			Bundle params = request.getParameters();
+			params.putString("message", "description  goes here");
+			
+			request.executeAsync();
+		} else {
+			pendingAction = PendingAction.POST_PHOTO;
+		}
+
+		// if (hasPublishPermission()) {
+		// mProgressHUD = ProgressHUD.show(GameCoreActivity.this,"Posting",
+		// true,true,this);
+		// Request request =
+		// Request.newUploadPhotoRequest(Session.getActiveSession(), bitmap, new
+		// Request.Callback() {
+		// @Override
+		// public void onCompleted(Response response) {
+		// showPublishResult("Photo Post", response.getGraphObject(),
+		// response.getError());
+		// }
+		// });
+		// request.executeAsync();
+		// }
 	}
-	
-	private void postText(){
-        if (hasPublishPermission()) {
 
-			mProgressHUD = ProgressHUD.show(GameCoreActivity.this,"Posting", true,true,this);
-            final String message = ((EditText) findViewById(R.id.facebook_share_textfield)).getText().toString();
-            Request request = Request
-                    .newStatusUpdateRequest(Session.getActiveSession(), message, new Request.Callback() {
-                        @Override
-                        public void onCompleted(Response response) {
-                            showPublishResult(message, response.getGraphObject(), response.getError());
-                        }
-                    });
-            request.executeAsync();
-        }
+	private void postText() {
+		if (hasPublishPermission()) {
+
+			mProgressHUD = ProgressHUD.show(GameCoreActivity.this, "Posting",
+					true, true, this);
+			final String message = ((EditText) findViewById(R.id.facebook_share_textfield))
+					.getText().toString();
+			Request request = Request.newStatusUpdateRequest(
+					Session.getActiveSession(), message,
+					new Request.Callback() {
+						@Override
+						public void onCompleted(Response response) {
+							showPublishResult(message,
+									response.getGraphObject(),
+									response.getError());
+						}
+					});
+			request.executeAsync();
+		}
 	}
-	
-    private void showPublishResult(String message, GraphObject result, FacebookRequestError error) {
-        String title = null;
-        String alertMessage = null;
-        if (error == null) {
-            title = "Success";
-            alertMessage = "Sucessfully posted";
-            mProgressHUD.setMessage("Completed");
 
-            mProgressHUD.dismiss();
-        } else {
-            title = "Error";
-            alertMessage = error.getErrorMessage();
-            mProgressHUD.setMessage("Error");
+	private interface GraphObjectWithId extends GraphObject {
+		String getId();
+	}
 
-            mProgressHUD.dismiss();
-        }
+	private void showPublishResult(String message, GraphObject result,
+			FacebookRequestError error) {
+		String title = null;
+		String alertMessage = null;
+		if (error == null) {
+			title = "Success";
+			String id = result.cast(GraphObjectWithId.class).getId();
+			alertMessage = "Sucessfully posted";// getString(R.string.successfully_posted_post,
+												// message, id);
+		} else {
+			title = "Error";
+			alertMessage = error.getErrorMessage();
+		}
 
-        new AlertDialog.Builder(this)
-                .setTitle(title)
-                .setMessage(alertMessage)
-                .setPositiveButton("ok", null)
-                .show();
-        
-        pendingAction = PendingAction.NONE;
-    }
-    
-    private void performPublish(PendingAction action) {
-        Session session = Session.getActiveSession();
+		new AlertDialog.Builder(this).setTitle(title).setMessage(alertMessage)
+				.setPositiveButton("OK", null).show();
+	}
 
-        pendingAction = action;
-        if (session != null) {
-            if (session.isOpened()){
-                if (hasPublishPermission()) {
-                    // We can do the action right away.
-                    handlePendingAction();
-                } else {
-                    // We need to get new permissions, then complete the action when we get called back.
-                	session.requestNewPublishPermissions(new Session.NewPermissionsRequest(this, PERMISSIONS));
-                }
-        	}
-        	else {
-        		facebookLogin();
-        	}
-        }
-        else {
-        	facebookLogin();
-        }
-    }
-    
-    private boolean hasPublishPermission() {
-        Session session = Session.getActiveSession();
-        return session != null && session.getPermissions().contains("publish_actions");
-    }
-	    
+	private void performPublish(PendingAction action) {
+		Session session = Session.getActiveSession();
 
+		pendingAction = action;
+		if (session != null) {
+			if (session.isOpened()) {
+				if (hasPublishPermission()) {
+					// We can do the action right away.
+					handlePendingAction();
+				} else {
+					// We need to get new permissions, then complete the action
+					// when we get called back.
+					session.requestNewPublishPermissions(new Session.NewPermissionsRequest(
+							this, PERMISSIONS));
+				}
+			} else {
+				facebookLogin();
+			}
+		} else {
+			facebookLogin();
+		}
+	}
+
+	// private boolean hasPublishPermission() {
+	// Session session = Session.getActiveSession();
+	// return session != null &&
+	// session.getPermissions().contains("publish_actions");
+	// }
+	private boolean hasPublishPermission() {
+		Session session = Session.getActiveSession();
+		return session != null
+				&& session.getPermissions().contains("publish_actions");
+	}
 
 	@Override
 	public void onCancel(DialogInterface dialog) {
@@ -719,5 +765,4 @@ public class GameCoreActivity extends Activity implements OnCancelListener{
 		mProgressHUD.dismiss();
 	}
 
-	
 }
