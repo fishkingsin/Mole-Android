@@ -346,17 +346,20 @@ public class GameCoreActivity extends Activity implements OnCancelListener{
 //            item2.setDisabledColor(new CCColor3B(32, 32, 64));
 //            item2.setColor(new CCColor3B(200, 200, 255));
             
-			MenuItemFont item3 = MenuItemFont.item("I toggle enable items", this, "menuCallbackEnable");
+//            LabelAtlas labelAtlas3 = LabelAtlas.label("0123456789", "fps_images.png", 16, 24, '.');
+//            MenuItemLabel item3 = MenuItemLabel.item(labelAtlas3, this, "menuCallbackDisabled");
+//            item3.setDisabledColor(new CCColor3B(32, 32, 64));
+//            item3.setColor(new CCColor3B(200, 200, 255));
 //			MenuItemFont item1 = MenuItemFont.item("Replace Scene", this, "onReplaceScene");
 //            MenuItemFont item2 = MenuItemFont.item("Replace Scene Transition", this, "onReplaceSceneTransition");
 //            MenuItemFont item3 = MenuItemFont.item("Go Back", this, "onGoBack");
 
 //            Menu menu = Menu.menu(item1, item2, item3);
 			
-			org.cocos2d.menus.Menu menu = org.cocos2d.menus.Menu.menu(item2,item1,item3);
+			org.cocos2d.menus.Menu menu = org.cocos2d.menus.Menu.menu(item2,item1);
 			//menu.alignItemsVertically();
 			menu.alignItemsHorizontally(10);
-			menu.setPosition(menu.getPositionX(), item1.getHeight());
+			menu.setPosition(menu.getPositionX(), 0);
 			addChild(menu);
 		}
 		public void menuCallback2() {

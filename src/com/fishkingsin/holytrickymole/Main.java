@@ -1,14 +1,26 @@
 package com.fishkingsin.holytrickymole;
 
+import java.io.IOException;
+import java.io.InputStream;
+
+import com.longevitysoft.android.xml.plist.PListXMLHandler;
+import com.longevitysoft.android.xml.plist.PListXMLHandler.PListParserListener;
+import com.longevitysoft.android.xml.plist.PListXMLHandler.ParseMode;
+import com.longevitysoft.android.xml.plist.PListXMLParser;
+import com.longevitysoft.android.xml.plist.domain.PList;
+import com.longevitysoft.android.xml.plist.domain.PListObject;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -33,7 +45,32 @@ public class Main extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.main);
-
+		PListXMLParser parser = new PListXMLParser();
+		PListXMLHandler pHandler = new PListXMLHandler();
+		PListParserListener parseListener = new PListParserListener(){
+			int count = 0; 
+			@Override
+			public void onPListParseDone(PList pList, ParseMode mode) {
+				
+			}
+			
+		};	
+		pHandler.setParseListener(parseListener);
+		parser.setHandler(pHandler);
+		AssetManager am = this.getAssets();
+		InputStream is;
+		try {
+			is = am.open("donald_holy-tricky_female.plist");
+			parser.parse(is);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		Button button = (Button) findViewById(R.id.startbutton);
 		
 		button.setOnClickListener((OnClickListener) this);
