@@ -2,6 +2,8 @@ package com.fishkingsin.holytrickymole;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.IntBuffer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -38,6 +40,12 @@ import com.facebook.UiLifecycleHelper;
 import com.facebook.model.GraphObject;
 import com.facebook.model.GraphUser;
 import com.fishkingsin.holytrickymole.GameCoreActivity.MainLayer.MyListener;
+import com.longevitysoft.android.xml.plist.PListXMLHandler;
+import com.longevitysoft.android.xml.plist.PListXMLParser;
+import com.longevitysoft.android.xml.plist.PListXMLHandler.PListParserListener;
+import com.longevitysoft.android.xml.plist.PListXMLHandler.ParseMode;
+import com.longevitysoft.android.xml.plist.domain.PList;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -49,6 +57,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.os.Bundle;
@@ -315,6 +324,37 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 			menu.setPosition(menu.getPositionX(), 0);
 			addChild(menu);
 			this.myListener = myListener;
+			
+			setupMole();
+		}
+
+		private void setupMole() {
+			// TODO Auto-generated method stub
+			PListXMLParser parser = new PListXMLParser();
+			PListXMLHandler pHandler = new PListXMLHandler();
+			PListParserListener parseListener = new PListParserListener(){
+				int count = 0; 
+				@Override
+				public void onPListParseDone(PList pList, ParseMode mode) {
+					
+				}
+				
+			};	
+			pHandler.setParseListener(parseListener);
+			parser.setHandler(pHandler);
+			AssetManager am = mContext.getAssets();
+			InputStream is;
+			try {
+				is = am.open("donald_holy-tricky_female.plist");
+				parser.parse(is);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 		public void FacebookAction() {
