@@ -113,7 +113,7 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 		Director.sharedDirector().setLandscape(false);
 
 		// show FPS
-		Director.sharedDirector().setDisplayFPS(true);
+		Director.sharedDirector().setDisplayFPS(false);
 
 		// frames per second
 		Director.sharedDirector().setAnimationInterval(1.0f / 60);
@@ -150,6 +150,7 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 			}
 
 		};
+		String targetPlist = " ";
 		mainLayer = new MainLayer(myListener);
 		scene.addChild(mainLayer, 2);
 
@@ -284,17 +285,23 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 		List<Sprite> moles;
 		private boolean bSave = false;
 		int curentMoleIndex = 0;
-
+		public String tragetPlist = "";
 		private boolean bPostFB = false;
 
 		public MainLayer(MyListener myListener) {
+
 			CCSize s = Director.sharedDirector().winSize();
+			Log.v("Main Layer", "Screen Size "+s.width+"x"+s.height);
 			mainNode = CocosNode.node();
 			isTouchEnabled_ = true;
 			SharedPreferences prefs = PreferenceManager
 					.getDefaultSharedPreferences(mContext);
 			sprite = Sprite.sprite(prefs.getString(
-					mContext.getString(R.string.keyImageName), "grossini.png"));
+					mContext.getString(R.string.keyImageName),
+					"tse_holy-tricky_female@2x.png"));
+			tragetPlist = prefs.getString(
+					mContext.getString(R.string.keyPlistName),
+					"tse_holy-tricky_female@2x.png");
 			float scale = s.width / sprite.getWidth();
 			sprite.setScale(scale);
 
@@ -317,37 +324,95 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 
 			addChild(mainNode);
 
-			Sprite itemSprite1 = Sprite.sprite("button_short_normal@2x.png");
-			Sprite itemSprite2 = Sprite.sprite("button_short_select@2x.png");
-			Sprite itemSprite3 = Sprite.sprite("button_short_disable@2x.png");
-			Sprite itemSprite4 = Sprite.sprite("button_short_normal@2x.png");
-			Sprite itemSprite5 = Sprite.sprite("button_short_select@2x.png");
-			Sprite itemSprite6 = Sprite.sprite("button_short_disable@2x.png");
-
-			MenuItemSprite item1 = MenuItemAtlasSprite.item(itemSprite1,
-					itemSprite2, itemSprite3, this, "addMole");
-			MenuItemSprite item2 = MenuItemAtlasSprite.item(itemSprite4,
-					itemSprite5, itemSprite6, this, "minusMole");
-			MenuItemSprite item3 = MenuItemAtlasSprite.item(itemSprite4,
-					itemSprite5, itemSprite6, this, "FacebookAction");
-			MenuItemSprite item4 = MenuItemAtlasSprite.item(itemSprite4,
-					itemSprite5, itemSprite6, this, "SaveImageToGallery");
+			String[] imageFilesLDPI = { "button_add_disable_ldpi.png",
+					"button_add_normal_ldpi.png", "button_add_select_ldpi.png",
+					"button_minus_disable_ldpi.png",
+					"button_minus_normal_ldpi.png", "button_minus_select_ldpi.png",
+					"button_facebook_disable_ldpi.png",
+					"button_facebook_normal_ldpi.png",
+					"button_facebook_select_ldpi.png",
+					"button_save_disable_ldpi.png", "button_save_normal_ldpi.png",
+					"button_save_select_ldpi.png" };
+			String[] imageFilesMDPI = { "button_add_disable_mdpi.png",
+					"button_add_normal_mdpi.png", "button_add_select_mdpi.png",
+					"button_minus_disable_mdpi.png",
+					"button_minus_normal_mdpi.png", "button_minus_select_mdpi.png",
+					"button_facebook_disable_mdpi.png",
+					"button_facebook_normal_mdpi.png",
+					"button_facebook_select_mdpi.png",
+					"button_save_disable_mdpi.png", "button_save_normal_mdpi.png",
+					"button_save_select_mdpi.png" };
+			String[] imageFilesHDPI = { "button_add_disable_hdpi.png",
+					"button_add_normal_hdpi.png", "button_add_select_hdpi.png",
+					"button_minus_disable_hdpi.png",
+					"button_minus_normal_hdpi.png", "button_minus_select_hdpi.png",
+					"button_facebook_disable_hdpi.png",
+					"button_facebook_normal_hdpi.png",
+					"button_facebook_select_hdpi.png",
+					"button_save_disable_hdpi.png", "button_save_normal_hdpi.png",
+					"button_save_select_hdpi.png" };
+			String[] imageFilesXHDPI = { "button_add_disable_xhdpi.png",
+					"button_add_normal_xhdpi.png", "button_add_select_xhdpi.png",
+					"button_minus_disable_xhdpi.png",
+					"button_minus_normal_xhdpi.png", "button_minus_select_xhdpi.png",
+					"button_facebook_disable_xhdpi.png",
+					"button_facebook_normal_xhdpi.png",
+					"button_facebook_select_xhdpi.png",
+					"button_save_disable_xhdpi.png", "button_save_normal_xhdpi.png",
+					"button_save_select_xhdpi.png" };
+			
+			String[] imageFiles = imageFilesLDPI;
+			
+			
+			if(s.width<=320)
+			{
+				imageFiles = imageFilesLDPI;
+			}else if(s.width<=480)
+			{
+				imageFiles = imageFilesMDPI;
+			}else if(s.width<=860)
+			{
+				imageFiles = imageFilesHDPI;
+			}
+			else if(s.width<=1200)
+			{
+				imageFiles = imageFilesXHDPI;
+			}
+			else 
+			{
+				imageFiles = imageFilesMDPI;
+			}
+			
+			MenuItemSprite item1 = MenuItemAtlasSprite.item(
+					Sprite.sprite(imageFiles[0]), Sprite.sprite(imageFiles[1]),
+					Sprite.sprite(imageFiles[2]), this, "addMole");
+			MenuItemSprite item2 = MenuItemAtlasSprite.item(
+					Sprite.sprite(imageFiles[3]), Sprite.sprite(imageFiles[4]),
+					Sprite.sprite(imageFiles[5]), this, "minusMole");
+			MenuItemSprite item3 = MenuItemAtlasSprite.item(
+					Sprite.sprite(imageFiles[6]), Sprite.sprite(imageFiles[7]),
+					Sprite.sprite(imageFiles[8]), this, "FacebookAction");
+			MenuItemSprite item4 = MenuItemAtlasSprite.item(
+					Sprite.sprite(imageFiles[9]), Sprite.sprite(imageFiles[10]),
+					Sprite.sprite(imageFiles[11]), this, "SaveImageToGallery");
 
 			org.cocos2d.menus.Menu menu = org.cocos2d.menus.Menu.menu(item4,
 					item3, item2, item1);
 			// menu.alignItemsVertically();
 			menu.alignItemsHorizontally(10);
-			menu.setPosition(menu.getPositionX(), item1.getHeight()*0.5f);
+			menu.setPosition(menu.getPositionX(), item1.getHeight() * 0.5f);
 			addChild(menu);
 			this.myListener = myListener;
 
-			setupMole();
+			//setupMole(tragetPlist);
 		}
 
-		private void setupMole() {
+		private void setupMole(String _targetPlist) {
+			Log.v("MainLayer", _targetPlist);
 			// TODO Auto-generated method stub
 			PListXMLParser parser = new PListXMLParser();
 			PListXMLHandler pHandler = new PListXMLHandler();
+
 			PListParserListener parseListener = new PListParserListener() {
 
 				@Override
@@ -361,7 +426,7 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 			AssetManager am = mContext.getAssets();
 			InputStream is;
 			try {
-				is = am.open("donald_holy-tricky_female.plist");
+				is = am.open(_targetPlist);
 				parser.parse(is);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block

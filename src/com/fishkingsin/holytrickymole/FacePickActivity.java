@@ -43,6 +43,18 @@ public class FacePickActivity extends FragmentActivity {
 			"littlethunder_holy-tricky_female@x2.png",
 			"peter_holy-tricky_female@2x.png", "sh_holy-tricky_female@2x.png",
 			"tse_holy-tricky_female@2x.png", };
+	String defaultDescription = "deafult_description.plist";
+
+	private String[] malePlist = { "donald_holy-tricky_male.plist",
+			"ks_holy-tricky_male.plist", "lbt_holy-tricky_male.plist",
+			"peter_holy-tricky_male.plist", "sh_holy-tricky_male.plist",
+			"tse_holy-tricky_male.plist" };
+
+	private String[] femalePlist = { "donald_holy-tricky_female.plist",
+			"ks_holy-tricky_female.plist", "lbt_holy-tricky_female.plist",
+			"littlethunder_holy-tricky_female.plist",
+			"peter_holy-tricky_female.plist", "sh_holy-tricky_female.plist",
+			"tse_holy-tricky_female.plist", };
 	private Integer[] mImageMaleIds = {
 			R.drawable.donald_holy_tricky_male_thumb,
 			R.drawable.ks_holy_tricky_male_thumb,
@@ -93,8 +105,11 @@ public class FacePickActivity extends FragmentActivity {
 				SharedPreferences prefs = PreferenceManager
 						.getDefaultSharedPreferences(mContext);
 				SharedPreferences.Editor editor = prefs.edit();
-				editor.putString(getString(R.string.keyImageName), maleImageName[position]);
-
+				editor.putString(getString(R.string.keyImageName),
+						maleImageName[position]);
+				editor.putString(getString(R.string.keyPlistName),
+						malePlist[position]);
+				
 				// Commit the edits!
 				editor.commit();
 
@@ -116,7 +131,8 @@ public class FacePickActivity extends FragmentActivity {
 						.getDefaultSharedPreferences(mContext);
 				SharedPreferences.Editor editor = prefs.edit();
 				editor.putString("keyImageName", femaleImageName[position]);
-
+				editor.putString(getString(R.string.keyPlistName),
+						femalePlist[position]);
 				// Commit the edits!
 				editor.commit();
 
@@ -211,6 +227,7 @@ public class FacePickActivity extends FragmentActivity {
 
 		return output;
 	}
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
@@ -235,7 +252,7 @@ public class FacePickActivity extends FragmentActivity {
 			final ScrollView scrollview = new ScrollView(this);
 			final TextView tv = new TextView(this);
 			tv.setText(Html.fromHtml(getString(R.string.credit_text)));
-			
+
 			tv.setMovementMethod(LinkMovementMethod.getInstance());
 			scrollview.addView(tv, params);
 
@@ -246,18 +263,16 @@ public class FacePickActivity extends FragmentActivity {
 			final View currentView = this.getWindow().getDecorView()
 					.findViewById(android.R.id.content);
 			popUp.showAtLocation(currentView, Gravity.BOTTOM, 0, 0);
-			
+
 			popUp.setFocusable(false);
 			popUp.setOutsideTouchable(true);
 			popUp.setTouchable(true);
-			
+
 			popUp.setTouchInterceptor(new OnTouchListener() {
 
 				@Override
-				public boolean onTouch(View v, MotionEvent event)
-				{
-					if (event.getAction() == MotionEvent.ACTION_OUTSIDE)
-					{
+				public boolean onTouch(View v, MotionEvent event) {
+					if (event.getAction() == MotionEvent.ACTION_OUTSIDE) {
 						popUp.dismiss();
 						return true;
 					}
@@ -265,7 +280,7 @@ public class FacePickActivity extends FragmentActivity {
 				}
 
 			});
-			popUp.update(0, 0,  (int)(currentView.getWidth() *0.7),
+			popUp.update(0, 0, (int) (currentView.getWidth() * 0.7),
 					currentView.getHeight());
 			return true;
 
