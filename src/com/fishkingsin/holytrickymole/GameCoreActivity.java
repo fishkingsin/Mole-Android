@@ -434,17 +434,20 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 						
 						Dict position = (Dict)d.getConfigurationObject("position");
 						int x = ((com.longevitysoft.android.xml.plist.domain.Integer)position.getConfigurationObject("x")).getValue();
-						int y = 480-((com.longevitysoft.android.xml.plist.domain.Integer)position.getConfigurationObject("y")).getValue();
+						int y = ((com.longevitysoft.android.xml.plist.domain.Integer)position.getConfigurationObject("y")).getValue();
 						
 						Log.v("onPListParseDone ","name :"+name);
 						
 						
 						Label label = Label.label(name, "DroidSans", 32);
 						label.setColor(new CCColor3B(255,0,255));
-			            addChild(label, 1);
-			            float scale = s.width/320.0f;
-			            Log.v("onPListParseDone" ,"Scale "+ scale + " position " + String.valueOf(x*scale)+" "+String.valueOf(y*scale));
-			            label.setPosition((float)(x*scale),(y*scale));
+						float scale = s.width/320.0f;
+						Log.v("onPListParseDone" ,"Scale "+ scale + " position " + String.valueOf(x*scale)+" "+String.valueOf(y*scale));
+						MoleDescription mole = new MoleDescription(label,(float)(x*scale),(y*scale),name);
+						addChild(mole);
+			            
+			            
+//			            label.setPosition();
 					}
 
 				}
