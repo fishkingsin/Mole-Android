@@ -1,6 +1,7 @@
 package com.fishkingsin.holytrickymole;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -27,6 +28,7 @@ import android.widget.TextView;
 
 public class Main extends Activity implements OnClickListener {
 	protected static final String TAG = "Main";
+	private Context mContext;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +74,19 @@ public class Main extends Activity implements OnClickListener {
 
 			}
 		});
+		Button creditButton = (Button) findViewById(R.id.credit_button);
+		mContext = this;
+		creditButton.setOnClickListener(new OnClickListener()
+		{
 
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Utilities.setupCreditPopWindow(getString(R.string.credit_text),(Activity)mContext);
+				
+			}
+			
+		});
 	}
 
 	@Override

@@ -88,4 +88,12 @@
         </LinearLayout>
     </TabHost>
 
+    <Button
+        android:id="@+id/credit_button"
+        style="@style/btnStyleCredit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:text="Credit" />
+
 </FrameLayout>

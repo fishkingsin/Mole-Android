@@ -1,5 +1,6 @@
 package com.fishkingsin.holytrickymole;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -18,6 +19,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.View.OnTouchListener;
@@ -25,6 +27,7 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -74,6 +77,7 @@ public class FacePickActivity extends FragmentActivity {
 	private GridView gridview1 = null;
 	private GridView gridview2 = null;
 	private Context mContext;
+	private PopupWindow myPopUp;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +90,18 @@ public class FacePickActivity extends FragmentActivity {
 		setContentView(R.layout.facepick_activity);
 		TabHost mTabHost = (TabHost) findViewById(android.R.id.tabhost);
 		mTabHost.setup();
+		Button creditButton = (Button) findViewById(R.id.credit_button);
+		creditButton.setOnClickListener(new OnClickListener()
+		{
 
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				myPopUp = Utilities.setupCreditPopWindow(getString(R.string.credit_text),(Activity)mContext);
+				
+			}
+			
+		});
 		View indicator = LayoutInflater.from(this).inflate(R.layout.tab,
 				(ViewGroup) findViewById(android.R.id.tabs), false);
 
@@ -144,7 +159,15 @@ public class FacePickActivity extends FragmentActivity {
 			}
 		});
 	}
-
+	@Override 
+	public void onStop()
+	{
+		if(myPopUp!=null)
+		{
+			myPopUp.dismiss();
+		}
+		super.onStop();
+	}
 	@Override
 	public void onBackPressed() {
 		// TODO Auto-generated method stub
@@ -235,7 +258,6 @@ public class FacePickActivity extends FragmentActivity {
 		return true;
 	}
 
-	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle item selection
 		switch (item.getItemId()) {

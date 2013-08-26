@@ -69,15 +69,26 @@ import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.util.Base64;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnTouchListener;
+import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+import android.widget.ScrollView;
+import android.widget.TextView;
 
 public class GameCoreActivity extends Activity implements OnCancelListener {
 	private static final String LOG_TAG = GameCoreActivity.class
@@ -85,6 +96,7 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 	private CCGLSurfaceView mGLSurfaceView;
 	private static Context mContext;
 	private MainLayer mainLayer;
+	public static PopupWindow myPopUp;
 	public static Bitmap bitmap;
 	public static boolean bSaved = false;
 
@@ -101,9 +113,12 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 		// .setMessage("Click on the screen to move and rotate Grossini")
 		// .setPositiveButton("Start", null).show();
 		getHashKey();
+		setContentView(R.layout.gamecore_layout);
+		
 		mGLSurfaceView = new CCGLSurfaceView(this);
-
 		setContentView(mGLSurfaceView);
+//		mGLSurfaceView = (CCGLSurfaceView)findViewById(R.id.composed);
+		
 		uiHelper = new UiLifecycleHelper(this, callback);
 		uiHelper.onCreate(savedInstanceState);
 	}
@@ -201,6 +216,10 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 
 	@Override
 	public void onDestroy() {
+		if(myPopUp!=null)
+		{
+			myPopUp.dismiss();
+		}
 		super.onDestroy();
 		uiHelper.onDestroy();
 		ActionManager.sharedManager().removeAllActions();
@@ -218,70 +237,16 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle item selection
-		/*
-		 * switch (item.getItemId()) { case R.id.credit: final PopupWindow popUp
-		 * = new PopupWindow(this);
-		 * 
-		 * LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-		 * LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, Gravity.TOP);
-		 * final LinearLayout ll = new LinearLayout(this);
-		 * ll.setLayoutParams(params); ll.setOrientation(LinearLayout.VERTICAL);
-		 * 
-		 * final ScrollView scrollview = new ScrollView(this); final TextView tv
-		 * = new TextView(this);
-		 * tv.setText(Html.fromHtml(getString(R.string.credit_text)));
-		 * 
-		 * tv.setMovementMethod(LinkMovementMethod.getInstance());
-		 * scrollview.addView(tv, params);
-		 * 
-		 * ll.addView(scrollview);
-		 * 
-		 * popUp.setContentView(ll);
-		 * 
-		 * final View currentView = this.getWindow().getDecorView()
-		 * .findViewById(android.R.id.content);
-		 * popUp.showAtLocation(currentView, Gravity.BOTTOM, 0, 0);
-		 * 
-		 * popUp.setFocusable(false); popUp.setOutsideTouchable(true);
-		 * popUp.setTouchable(true);
-		 * 
-		 * popUp.setTouchInterceptor(new OnTouchListener() {
-		 * 
-		 * @Override public boolean onTouch(View v, MotionEvent event) { if
-		 * (event.getAction() == MotionEvent.ACTION_OUTSIDE) { popUp.dismiss();
-		 * return true; } return false; }
-		 * 
-		 * }); popUp.update(0, 0, (int) (currentView.getWidth() * 0.7),
-		 * currentView.getHeight()); return true; case R.id.saveimage:
-		 * mainLayer.bSave = true; while(!bSaved) { try {
-		 * 
-		 * Thread.sleep(100); } catch (InterruptedException e) { // TODO
-		 * Auto-generated catch block e.printStackTrace(); } } bSaved = false;
-		 * Calendar timestamp = Calendar.getInstance(); SimpleDateFormat format
-		 * = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		 * MediaStore.Images.Media.insertImage(mContext.getContentResolver(),
-		 * bitmap, format.format(timestamp.getTime()), ""); return true;
-		 * 
-		 * case R.id.facebook:
-		 * 
-		 * mainLayer.bSave = true;
-		 * 
-		 * 
-		 * while(!bSaved) { try {
-		 * 
-		 * Thread.sleep(100); } catch (InterruptedException e) { // TODO
-		 * Auto-generated catch block e.printStackTrace(); } } bSaved = false;
-		 * onClickPostPhoto(); // Intent intent = new Intent(this,
-		 * FacebookShareActivity.class); // // intent.putExtra("BitmapImage",
-		 * bitmap); // this.startActivity(intent);
-		 * 
-		 * return true;
-		 * 
-		 * default: return super.onOptionsItemSelected(item); }
-		 */
-		return super.onOptionsItemSelected(item);
+		
+		switch (item.getItemId()) { 
+		case R.id.credit: 
+			myPopUp = Utilities.setupPopWindow(getString(R.string.credit_text),(Activity)this);
+			return true;
+		
+			default: return super.onOptionsItemSelected(item); 
+		}
 	}
-
+	
 	static class MainLayer extends Layer {
 		static final int kTagSprite = 1;
 
@@ -297,6 +262,7 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 		private ArrayList moleArray;
 		org.cocos2d.menus.Menu menu2;
 		org.cocos2d.menus.Menu menu1;
+		String msg="";
 		public MainLayer(MyListener myListener) {
 
 			CCSize s = Director.sharedDirector().winSize();
@@ -405,8 +371,7 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 			
 			menu2.alignItemsHorizontally(10);
 			menu2.setPosition(menu2.getPositionX(), item1.getHeight() * 0.5f);
-			addChild(menu2);
-			menu2.setVisible(false);
+			
 			this.myListener = myListener;
 
 			setupMole(tragetPlist);
@@ -414,13 +379,14 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 		}
 		public void confirm()
 		{
-			menu1.setVisible(false);
-			menu2.setVisible(true);
+			addChild(menu2);
+			removeChild(menu1,false);
+			myPopUp = Utilities.setupPopWindow(msg,(Activity)mContext);
 		}
 		public void cancel()
 		{
-			menu1.setVisible(true);
-			menu2.setVisible(false);
+			addChild(menu1);
+			removeChild(menu2,false);
 		}
 		private void setupDescription() {
 			PListXMLParser parser = new PListXMLParser();
@@ -431,7 +397,7 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 				@Override
 				public void onPListParseDone(PList pList, ParseMode mode) {
 					descriptionPlist = pList;
-					String msg="";
+					
 					
 					Dict root = (Dict)pList.getRootElement();
 					Array objects = (Array)root.getConfigurationObject("items");
@@ -443,11 +409,13 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 //						msg+=s.getValue()+"\n";
 						Log.v("setupDescription:name",n.getValue());
 						Log.v("setupDescription:descritpion",s.getValue());
+						msg+=">"+s.getValue()+"\n";
 					}
 					
 //					Label label = Label.label(msg, "DroidSans", 32);
 //					label.setColor(new CCColor3B(255,0,255));
 //					addChild(label);
+					
 				}
 				
 			};
@@ -505,6 +473,7 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 			            
 //			            label.setPosition();
 					}
+					
 
 				}
 
