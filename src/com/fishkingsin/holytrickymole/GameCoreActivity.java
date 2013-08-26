@@ -293,7 +293,10 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 		int curentMoleIndex = 0;
 		public String tragetPlist = "";
 		private boolean bPostFB = false;
-
+		private PList descriptionPlist = null;
+		private ArrayList moleArray;
+		org.cocos2d.menus.Menu menu2;
+		org.cocos2d.menus.Menu menu1;
 		public MainLayer(MyListener myListener) {
 
 			CCSize s = Director.sharedDirector().winSize();
@@ -309,13 +312,14 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 					mContext.getString(R.string.keyPlistName),
 					"tse_holy-tricky_female@2x.png");
 			float scale = s.width / sprite.getWidth();
+			
 			sprite.setScale(scale);
 
 			Layer layer = ColorLayer.node(new CCColor4B(93, 113, 112, 255));
 			mainNode.addChild(layer, -1);
 
 			mainNode.addChild(sprite, 0, kTagSprite);
-			sprite.setPosition((int) (s.width * 0.5), (int) (s.height * 0.5));
+			sprite.setPosition((int) (s.width * 0.5), (int) (s.height * 0.5)-(int)(((sprite.getHeight()*scale)-s.height)*0.5));
 			moles = new ArrayList<Sprite>();
 			for (int i = 0; i < 10; i++) {
 				moles.add(Sprite.sprite("mole01@2x.png"));
@@ -329,97 +333,149 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 			}
 
 			addChild(mainNode);
-
-			String[] imageFilesLDPI = { "button_add_disable_ldpi.png",
-					"button_add_normal_ldpi.png", "button_add_select_ldpi.png",
-					"button_minus_disable_ldpi.png",
-					"button_minus_normal_ldpi.png", "button_minus_select_ldpi.png",
-					"button_facebook_disable_ldpi.png",
-					"button_facebook_normal_ldpi.png",
-					"button_facebook_select_ldpi.png",
-					"button_save_disable_ldpi.png", "button_save_normal_ldpi.png",
-					"button_save_select_ldpi.png" };
-			String[] imageFilesMDPI = { "button_add_disable_mdpi.png",
-					"button_add_normal_mdpi.png", "button_add_select_mdpi.png",
-					"button_minus_disable_mdpi.png",
-					"button_minus_normal_mdpi.png", "button_minus_select_mdpi.png",
-					"button_facebook_disable_mdpi.png",
-					"button_facebook_normal_mdpi.png",
-					"button_facebook_select_mdpi.png",
-					"button_save_disable_mdpi.png", "button_save_normal_mdpi.png",
-					"button_save_select_mdpi.png" };
-			String[] imageFilesHDPI = { "button_add_disable_hdpi.png",
-					"button_add_normal_hdpi.png", "button_add_select_hdpi.png",
-					"button_minus_disable_hdpi.png",
-					"button_minus_normal_hdpi.png", "button_minus_select_hdpi.png",
-					"button_facebook_disable_hdpi.png",
-					"button_facebook_normal_hdpi.png",
-					"button_facebook_select_hdpi.png",
-					"button_save_disable_hdpi.png", "button_save_normal_hdpi.png",
-					"button_save_select_hdpi.png" };
-			String[] imageFilesXHDPI = { "button_add_disable_xhdpi.png",
-					"button_add_normal_xhdpi.png", "button_add_select_xhdpi.png",
-					"button_minus_disable_xhdpi.png",
-					"button_minus_normal_xhdpi.png", "button_minus_select_xhdpi.png",
-					"button_facebook_disable_xhdpi.png",
-					"button_facebook_normal_xhdpi.png",
-					"button_facebook_select_xhdpi.png",
-					"button_save_disable_xhdpi.png", "button_save_normal_xhdpi.png",
-					"button_save_select_xhdpi.png" };
+			String []_dpi = {"ldpi","mdpi","hdpi","xhdpi"};
+			String prefix = "button_";
+			String state_disable = "disable_";
+			String state_select = "select_";
+			String state_normal = "normal_";
+			String[] buttons = { "add_",
+					"minus_","facebook_","save_","confirm_","cancel_" };
+			String dpi = _dpi[0];
+			String ext = ".png";
 			
-			String[] imageFiles = imageFilesLDPI;
 			
 			
 			if(s.width<=320)
 			{
-				imageFiles = imageFilesLDPI;
+				dpi = _dpi[0];
 			}else if(s.width<=480)
 			{
-				imageFiles = imageFilesMDPI;
+				dpi = _dpi[1];
 			}else if(s.width<=860)
 			{
-				imageFiles = imageFilesHDPI;
+				dpi = _dpi[2];
 			}
 			else if(s.width<=1200)
 			{
-				imageFiles = imageFilesXHDPI;
+				dpi = _dpi[3];
 			}
 			else 
 			{
-				imageFiles = imageFilesMDPI;
+				dpi = _dpi[0];
+			}
+			List<String> imageFiles = new ArrayList<String>();
+			for(int i = 0 ; i < buttons.length ;i++)
+			{
+			
+				imageFiles.add(prefix+buttons[i]+state_normal+dpi+ext);
+				imageFiles.add(prefix+buttons[i]+state_select+dpi+ext);
+				imageFiles.add(prefix+buttons[i]+state_disable+dpi+ext);
+
 			}
 			
 			MenuItemSprite item1 = MenuItemAtlasSprite.item(
-					Sprite.sprite(imageFiles[0]), Sprite.sprite(imageFiles[1]),
-					Sprite.sprite(imageFiles[2]), this, "addMole");
+					Sprite.sprite(imageFiles.get(0)), Sprite.sprite(imageFiles.get(1)),
+					Sprite.sprite(imageFiles.get(2)), this, "addMole");
 			MenuItemSprite item2 = MenuItemAtlasSprite.item(
-					Sprite.sprite(imageFiles[3]), Sprite.sprite(imageFiles[4]),
-					Sprite.sprite(imageFiles[5]), this, "minusMole");
+					Sprite.sprite(imageFiles.get(3)), Sprite.sprite(imageFiles.get(4)),
+					Sprite.sprite(imageFiles.get(5)), this, "minusMole");
+			
 			MenuItemSprite item3 = MenuItemAtlasSprite.item(
-					Sprite.sprite(imageFiles[6]), Sprite.sprite(imageFiles[7]),
-					Sprite.sprite(imageFiles[8]), this, "FacebookAction");
+					Sprite.sprite(imageFiles.get(12)), Sprite.sprite(imageFiles.get(13)),
+					Sprite.sprite(imageFiles.get(14)), this, "confirm");
+			
 			MenuItemSprite item4 = MenuItemAtlasSprite.item(
-					Sprite.sprite(imageFiles[9]), Sprite.sprite(imageFiles[10]),
-					Sprite.sprite(imageFiles[11]), this, "SaveImageToGallery");
+					Sprite.sprite(imageFiles.get(15)), Sprite.sprite(imageFiles.get(16)),
+					Sprite.sprite(imageFiles.get(17)), this, "cancel");
+			MenuItemSprite item5 = MenuItemAtlasSprite.item(
+					Sprite.sprite(imageFiles.get(6)), Sprite.sprite(imageFiles.get(7)),
+					Sprite.sprite(imageFiles.get(8)), this, "FacebookAction");
+			MenuItemSprite item6 = MenuItemAtlasSprite.item(
+					Sprite.sprite(imageFiles.get(9)), Sprite.sprite(imageFiles.get(10)),
+					Sprite.sprite(imageFiles.get(11)), this, "SaveImageToGallery");
 
-			org.cocos2d.menus.Menu menu = org.cocos2d.menus.Menu.menu(item4,
+			menu1 = org.cocos2d.menus.Menu.menu(
 					item3, item2, item1);
+			menu2 = org.cocos2d.menus.Menu.menu(
+					item6, item5, item4);
 			// menu.alignItemsVertically();
-			menu.alignItemsHorizontally(10);
-			menu.setPosition(menu.getPositionX(), item1.getHeight() * 0.5f);
-			addChild(menu);
+			menu1.alignItemsHorizontally(10);
+			menu1.setPosition(menu1.getPositionX(), item1.getHeight() * 0.5f);
+			addChild(menu1);
+			
+			menu2.alignItemsHorizontally(10);
+			menu2.setPosition(menu2.getPositionX(), item1.getHeight() * 0.5f);
+			addChild(menu2);
+			menu2.setVisible(false);
 			this.myListener = myListener;
 
 			setupMole(tragetPlist);
+			setupDescription();
 		}
+		public void confirm()
+		{
+			menu1.setVisible(false);
+			menu2.setVisible(true);
+		}
+		public void cancel()
+		{
+			menu1.setVisible(true);
+			menu2.setVisible(false);
+		}
+		private void setupDescription() {
+			PListXMLParser parser = new PListXMLParser();
+			PListXMLHandler pHandler = new PListXMLHandler();
+			
+			PListParserListener parseListener = new PListParserListener() {
 
+				@Override
+				public void onPListParseDone(PList pList, ParseMode mode) {
+					descriptionPlist = pList;
+					String msg="";
+					
+					Dict root = (Dict)pList.getRootElement();
+					Array objects = (Array)root.getConfigurationObject("items");
+					for(PListObject o : objects)
+					{
+						Dict d = (Dict)o;
+						com.longevitysoft.android.xml.plist.domain.String s = (com.longevitysoft.android.xml.plist.domain.String)d.getConfigurationObject("description");
+						com.longevitysoft.android.xml.plist.domain.String n = (com.longevitysoft.android.xml.plist.domain.String)d.getConfigurationObject("name");
+//						msg+=s.getValue()+"\n";
+						Log.v("setupDescription:name",n.getValue());
+						Log.v("setupDescription:descritpion",s.getValue());
+					}
+					
+//					Label label = Label.label(msg, "DroidSans", 32);
+//					label.setColor(new CCColor3B(255,0,255));
+//					addChild(label);
+				}
+				
+			};
+			pHandler.setParseListener(parseListener);
+			parser.setHandler(pHandler);
+			AssetManager am = mContext.getAssets();
+			InputStream is;
+			try {
+				is = am.open("descriptions.plist");
+				parser.parse(is);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		private void setupMole(String _targetPlist) {
 			Log.v("MainLayer", _targetPlist);
+			moleArray = new ArrayList<MoleDescription>();
 			// TODO Auto-generated method stub
 			PListXMLParser parser = new PListXMLParser();
 			PListXMLHandler pHandler = new PListXMLHandler();
 			
 			PListParserListener parseListener = new PListParserListener() {
+
+				
 
 				@Override
 				public void onPListParseDone(PList pList, ParseMode mode) {
@@ -434,7 +490,7 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 						
 						Dict position = (Dict)d.getConfigurationObject("position");
 						int x = ((com.longevitysoft.android.xml.plist.domain.Integer)position.getConfigurationObject("x")).getValue();
-						int y = ((com.longevitysoft.android.xml.plist.domain.Integer)position.getConfigurationObject("y")).getValue();
+						int y = 480-((com.longevitysoft.android.xml.plist.domain.Integer)position.getConfigurationObject("y")).getValue();
 						
 						Log.v("onPListParseDone ","name :"+name);
 						
@@ -445,7 +501,7 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 						Log.v("onPListParseDone" ,"Scale "+ scale + " position " + String.valueOf(x*scale)+" "+String.valueOf(y*scale));
 						MoleDescription mole = new MoleDescription(label,(float)(x*scale),(y*scale),name);
 						addChild(mole);
-			            
+			            moleArray.add(mole);
 			            
 //			            label.setPosition();
 					}
@@ -515,7 +571,7 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 
 				moles.get(curentMoleIndex)
 						.runAction(
-								MoveTo.action(0.1f, (int) (s.width * 0.5),
+								MoveTo.action(0.5f, (int) (s.width * 0.5),
 										s.height / 2));
 				curentMoleIndex++;
 			}
