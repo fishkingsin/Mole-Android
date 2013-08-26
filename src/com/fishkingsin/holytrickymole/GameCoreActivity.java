@@ -10,6 +10,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import javax.microedition.khronos.opengles.GL10;
 import org.cocos2d.actions.ActionManager;
@@ -20,11 +21,13 @@ import org.cocos2d.layers.Layer;
 import org.cocos2d.menus.*;
 import org.cocos2d.nodes.CocosNode;
 import org.cocos2d.nodes.Director;
+import org.cocos2d.nodes.Label;
 import org.cocos2d.nodes.RenderTexture;
 import org.cocos2d.nodes.Scene;
 import org.cocos2d.nodes.Sprite;
 import org.cocos2d.nodes.TextureManager;
 import org.cocos2d.opengl.CCGLSurfaceView;
+import org.cocos2d.types.CCColor3B;
 import org.cocos2d.types.CCColor4B;
 import org.cocos2d.types.CCPoint;
 import org.cocos2d.types.CCSize;
@@ -44,7 +47,10 @@ import com.longevitysoft.android.xml.plist.PListXMLHandler;
 import com.longevitysoft.android.xml.plist.PListXMLParser;
 import com.longevitysoft.android.xml.plist.PListXMLHandler.PListParserListener;
 import com.longevitysoft.android.xml.plist.PListXMLHandler.ParseMode;
+import com.longevitysoft.android.xml.plist.domain.Array;
+import com.longevitysoft.android.xml.plist.domain.Dict;
 import com.longevitysoft.android.xml.plist.domain.PList;
+import com.longevitysoft.android.xml.plist.domain.PListObject;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -404,7 +410,7 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 			addChild(menu);
 			this.myListener = myListener;
 
-			//setupMole(tragetPlist);
+			setupMole(tragetPlist);
 		}
 
 		private void setupMole(String _targetPlist) {
@@ -412,11 +418,34 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 			// TODO Auto-generated method stub
 			PListXMLParser parser = new PListXMLParser();
 			PListXMLHandler pHandler = new PListXMLHandler();
-
+			
 			PListParserListener parseListener = new PListParserListener() {
 
 				@Override
 				public void onPListParseDone(PList pList, ParseMode mode) {
+					CCSize s = Director.sharedDirector().winSize();
+					Dict root = (Dict)pList.getRootElement();
+					Array objects = (Array)root.getConfigurationObject("items");
+					for(PListObject o : objects)
+					{
+						Dict d = (Dict)o;
+						
+						String name = ((com.longevitysoft.android.xml.plist.domain.String)d.getConfigurationObject("name")).getValue();
+						
+						Dict position = (Dict)d.getConfigurationObject("position");
+						int x = ((com.longevitysoft.android.xml.plist.domain.Integer)position.getConfigurationObject("x")).getValue();
+						int y = 480-((com.longevitysoft.android.xml.plist.domain.Integer)position.getConfigurationObject("y")).getValue();
+						
+						Log.v("onPListParseDone ","name :"+name);
+						
+						
+						Label label = Label.label(name, "DroidSans", 32);
+						label.setColor(new CCColor3B(255,0,255));
+			            addChild(label, 1);
+			            float scale = s.width/320.0f;
+			            Log.v("onPListParseDone" ,"Scale "+ scale + " position " + String.valueOf(x*scale)+" "+String.valueOf(y*scale));
+			            label.setPosition((float)(x*scale),(y*scale));
+					}
 
 				}
 
@@ -483,7 +512,7 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 
 				moles.get(curentMoleIndex)
 						.runAction(
-								MoveTo.action(1.0f, (int) (s.width * 0.5),
+								MoveTo.action(0.1f, (int) (s.width * 0.5),
 										s.height / 2));
 				curentMoleIndex++;
 			}
