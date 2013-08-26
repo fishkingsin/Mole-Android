@@ -10,8 +10,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-
 import javax.microedition.khronos.opengles.GL10;
 import org.cocos2d.actions.ActionManager;
 import org.cocos2d.actions.interval.MoveTo;
@@ -54,7 +52,6 @@ import com.longevitysoft.android.xml.plist.domain.PListObject;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -79,7 +76,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnTouchListener;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
@@ -87,6 +85,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -240,7 +239,7 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 		
 		switch (item.getItemId()) { 
 		case R.id.credit: 
-			myPopUp = Utilities.setupPopWindow(getString(R.string.credit_text),(Activity)this);
+			myPopUp = setupPopWindow(getString(R.string.credit_text),(Activity)this);
 			return true;
 		
 			default: return super.onOptionsItemSelected(item); 
@@ -381,7 +380,7 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 		{
 			addChild(menu2);
 			removeChild(menu1,false);
-			myPopUp = Utilities.setupPopWindow(msg,(Activity)mContext);
+			myPopUp = setupPopWindow(msg,(Activity)mContext);
 		}
 		public void cancel()
 		{
@@ -698,6 +697,7 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 	private PendingAction pendingAction = PendingAction.NONE;
 	private static final List<String> PERMISSIONS = Arrays
 			.asList("publish_actions");
+	
 	private UiLifecycleHelper uiHelper;
 	private Session.StatusCallback callback = new Session.StatusCallback() {
 		@Override
@@ -947,5 +947,94 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 		// TODO Auto-generated method stub
 		mProgressHUD.dismiss();
 	}
+	static PopupWindow setupPopWindow(String text , Activity activity)
+	{
+		final PopupWindow popUp = new PopupWindow(activity);
+		final View currentView = activity.getWindow().getDecorView().findViewById(android.R.id.content);	
+		LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+		final RelativeLayout rl = new RelativeLayout(activity);
+		rl.setLayoutParams(params);
+		//ll.setOrientation(LinearLayout.VERTICAL);
+	
+		final ScrollView scrollview = new ScrollView(activity);
+		final TextView tv= new TextView(activity);
+		tv.setText(Html.fromHtml(text));
+	
+		tv.setMovementMethod(LinkMovementMethod.getInstance());
+		LayoutParams sparams = new LayoutParams(LayoutParams.MATCH_PARENT, (int) (currentView.getHeight() * 0.8));
+		scrollview.addView(tv, sparams);
+		scrollview.setLayoutParams(new ViewGroup.LayoutParams(LayoutParams.MATCH_PARENT, (int) (currentView.getHeight() * 0.8)));
+		rl.addView(scrollview);
+		
+		final LinearLayout hl = new LinearLayout(activity);
+		hl.setLayoutParams(params);
+		hl.setOrientation(LinearLayout.HORIZONTAL);
+		Button button1 = new Button(activity);
+		button1.setOnClickListener(new OnClickListener()
+		{
 
+			@Override
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				Log.v(LOG_TAG,"Button 1 Click");
+			}
+			
+		});
+		button1.setText("Cancel");
+		button1.setGravity(Gravity.BOTTOM);
+		Button button2 = new Button(activity);
+		button2.setText("Facebook");
+		button2.setGravity(Gravity.BOTTOM);
+		button2.setOnClickListener(new OnClickListener()
+		{
+
+			@Override
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				Log.v(LOG_TAG,"Button 2 Click");
+			}
+			
+		});
+		Button button3 = new Button(activity);
+		button3.setText("Save");
+		button3.setGravity(Gravity.BOTTOM);
+		button3.setOnClickListener(new OnClickListener()
+		{
+
+			@Override
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				Log.v(LOG_TAG,"Button 3 Click");
+			}
+			
+		});
+		hl.addView(button1);
+		hl.addView(button2);
+		hl.addView(button3);
+		hl.setGravity(Gravity.BOTTOM);
+		rl.addView(hl);
+	
+		popUp.setContentView(rl);
+	
+		
+		popUp.showAtLocation(currentView, Gravity.BOTTOM, 0, 0);
+	
+		popUp.setFocusable(false); popUp.setOutsideTouchable(true);
+		popUp.setTouchable(true);
+	
+//		popUp.setTouchInterceptor(new OnTouchListener() {
+	
+//		@Override public boolean onTouch(View v, MotionEvent event) 
+//		{
+//			if(event.getAction() == MotionEvent.ACTION_OUTSIDE) { 
+//				popUp.dismiss();
+//				return true; 
+//		}
+//			return false; 
+//			}
+//		
+//		}); 
+		popUp.update(0, 0, (int) (currentView.getWidth() * 0.8),currentView.getHeight()); 
+		return popUp;
+	}
 }

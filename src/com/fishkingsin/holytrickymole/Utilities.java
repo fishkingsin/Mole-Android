@@ -18,66 +18,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 public class Utilities {
-	static PopupWindow setupPopWindow(String text , Activity activity)
-	{
-		final PopupWindow popUp = new PopupWindow(activity);
-		final View currentView = activity.getWindow().getDecorView().findViewById(android.R.id.content);	
-		LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-		final RelativeLayout rl = new RelativeLayout(activity);
-		rl.setLayoutParams(params);
-		//ll.setOrientation(LinearLayout.VERTICAL);
 	
-		final ScrollView scrollview = new ScrollView(activity);
-		final TextView tv= new TextView(activity);
-		tv.setText(Html.fromHtml(text));
-	
-		tv.setMovementMethod(LinkMovementMethod.getInstance());
-		LayoutParams sparams = new LayoutParams(LayoutParams.MATCH_PARENT, (int) (currentView.getHeight() * 0.8));
-		scrollview.addView(tv, sparams);
-		scrollview.setLayoutParams(new ViewGroup.LayoutParams(480, 800));
-		rl.addView(scrollview);
-		
-		final LinearLayout hl = new LinearLayout(activity);
-		hl.setLayoutParams(params);
-		hl.setOrientation(LinearLayout.HORIZONTAL);
-		Button button1 = new Button(activity);
-		button1.setText("Cancel");
-		button1.setGravity(Gravity.BOTTOM);
-		Button button2 = new Button(activity);
-		button2.setText("Facebook");
-		button2.setGravity(Gravity.BOTTOM);
-		Button button3 = new Button(activity);
-		button3.setText("Save");
-		button3.setGravity(Gravity.BOTTOM);
-		hl.addView(button1);
-		hl.addView(button2);
-		hl.addView(button3);
-		hl.setGravity(Gravity.BOTTOM);
-		rl.addView(hl);
-	
-		popUp.setContentView(rl);
-	
-		
-		popUp.showAtLocation(currentView, Gravity.BOTTOM, 0, 0);
-	
-		popUp.setFocusable(false); popUp.setOutsideTouchable(true);
-		popUp.setTouchable(true);
-	
-//		popUp.setTouchInterceptor(new OnTouchListener() {
-	
-//		@Override public boolean onTouch(View v, MotionEvent event) 
-//		{
-//			if(event.getAction() == MotionEvent.ACTION_OUTSIDE) { 
-//				popUp.dismiss();
-//				return true; 
-//		}
-//			return false; 
-//			}
-//		
-//		}); 
-		popUp.update(0, 0, (int) (currentView.getWidth() * 0.8),currentView.getHeight()); 
-		return popUp;
-	}
 	static PopupWindow setupCreditPopWindow(String text , Activity activity)
 	{
 		final PopupWindow popUp = new PopupWindow(activity);
