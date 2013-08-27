@@ -54,5 +54,10 @@
 <p>「點滴在癦頭」由903好出奇節目主持細So, C君, 朱薰及聽眾股東們集體創作，如有雷同，實屬巧合。</p></body></html>]]>
     </string>
     <string name="dismiss">dismiss</string>
-
+ <string name="banner_top">Top Banner Ad</string>
+    <string name="banner_bottom">Bottom Banner Ad</string>
+    <string name="button_close_to_ad">Button that\'s too close</string>
+    <string name="error_receive_ad">Unable to fetch Ad. Waiting for the next refresh.</string>
+    <string name="admob_id">a14b5f8130c17ef</string>
+    <string name="ad_covers_content">Ad shouldn\'t cover content!</string>
 </resources>
