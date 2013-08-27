@@ -121,11 +121,11 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 		// .setPositiveButton("Start", null).show();
 		getHashKey();
 		setContentView(R.layout.gamecore_layout);
-		
+
 		mGLSurfaceView = new CCGLSurfaceView(this);
 		setContentView(mGLSurfaceView);
-//		mGLSurfaceView = (CCGLSurfaceView)findViewById(R.id.composed);
-		
+		// mGLSurfaceView = (CCGLSurfaceView)findViewById(R.id.composed);
+
 		uiHelper = new UiLifecycleHelper(this, callback);
 		uiHelper.onCreate(savedInstanceState);
 	}
@@ -178,7 +178,7 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 			}
 
 		};
-//		String targetPlist = " ";
+		// String targetPlist = " ";
 		mainLayer = new MainLayer(myListener);
 		scene.addChild(mainLayer, 2);
 
@@ -223,8 +223,7 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 
 	@Override
 	public void onDestroy() {
-		if(myPopUp!=null)
-		{
+		if (myPopUp != null) {
 			myPopUp.dismiss();
 		}
 		super.onDestroy();
@@ -244,16 +243,18 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle item selection
-		
-		switch (item.getItemId()) { 
-		case R.id.credit: 
-			myPopUp = setupPopWindow(getString(R.string.credit_text),(Activity)this);
+
+		switch (item.getItemId()) {
+		case R.id.credit:
+			myPopUp = setupPopWindow(getString(R.string.credit_text),
+					(Activity) this);
 			return true;
-		
-			default: return super.onOptionsItemSelected(item); 
+
+		default:
+			return super.onOptionsItemSelected(item);
 		}
 	}
-	
+
 	static class MainLayer extends Layer {
 		static final int kTagSprite = 1;
 
@@ -262,19 +263,20 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 		RenderTexture target;
 		List<Sprite> moles;
 		private boolean bSave = false;
-		int curentMoleIndex = 0;
+		int currentMoleIndex = 0;
 		public String tragetPlist = "";
 		private boolean bPostFB = false;
-		
+
 		private ArrayList<MoleDescription> moleArray;
-//		org.cocos2d.menus.Menu menu2;
+		// org.cocos2d.menus.Menu menu2;
 		org.cocos2d.menus.Menu menu1;
-		String msg="";
-		Map<String,String>descriptions;
+		String msg = "";
+		Map<String, String> descriptions;
+
 		public MainLayer(MyListener myListener) {
 
 			CCSize s = Director.sharedDirector().winSize();
-			Log.v("Main Layer", "Screen Size "+s.width+"x"+s.height);
+			Log.v("Main Layer", "Screen Size " + s.width + "x" + s.height);
 			mainNode = CocosNode.node();
 			isTouchEnabled_ = true;
 			SharedPreferences prefs = PreferenceManager
@@ -286,183 +288,192 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 					mContext.getString(R.string.keyPlistName),
 					"tse_holy-tricky_female@2x.png");
 			float scale = s.width / sprite.getWidth();
-			
+
 			sprite.setScale(scale);
 
 			Layer layer = ColorLayer.node(new CCColor4B(93, 113, 112, 255));
 			mainNode.addChild(layer, -1);
-			
-			Bitmap bm = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.banner);
+
+			Bitmap bm = BitmapFactory.decodeResource(mContext.getResources(),
+					R.drawable.banner);
 			Sprite banner = Sprite.sprite(bm);
-			
+
 			mainNode.addChild(banner);
-			banner.setAnchorPoint((float)(banner.getWidth()*0.5), (float)(banner.getHeight()*0.5));
-			banner.setPosition((float)(s.width*0.5),(float)(s.height-(banner.getHeight()*0.5)));
-			
+			banner.setAnchorPoint((float) (banner.getWidth() * 0.5),
+					(float) (banner.getHeight() * 0.5));
+			banner.setPosition((float) (s.width * 0.5),
+					(float) (s.height - (banner.getHeight() * 0.5)));
+
 			mainNode.addChild(sprite, 0, kTagSprite);
 			sprite.setAnchorPoint(0, 0);
-			sprite.setPosition(0,(s.height-(sprite.getHeight()*scale)));//(int) (s.width * 0.5), 0);//(int) (s.height * 0.5)-(int)(((sprite.getHeight()*scale)-s.height)*0.5)
+			sprite.setPosition(0, (s.height - (sprite.getHeight() * scale)));// (int)
+																				// (s.width
+																				// *
+																				// 0.5),
+																				// 0);//(int)
+																				// (s.height
+																				// *
+																				// 0.5)-(int)(((sprite.getHeight()*scale)-s.height)*0.5)
 			moles = new ArrayList<Sprite>();
-			for (int i = 0; i < 10; i++) {
-				moles.add(Sprite.sprite("mole01@2x.png"));
-
-				moles.get(i).setPosition((int) (s.width * 0.5), -50);
-				mainNode.addChild(moles.get(i), 0, i + 1);
-				moles.get(i).setScale(scale);
-				// moles.get(i).runAction(
-				// MoveTo.action(1.0f, (int) (s.width * 0.5)
-				// + ((i - 5) * 100), s.height / 2));
-			}
+//			for (int i = 0; i < 10; i++) {
+//				moles.add(Sprite.sprite("mole01@2x.png"));
+//
+//				moles.get(i).setPosition((int) (s.width * 0.5), -50);
+//				mainNode.addChild(moles.get(i), 0, i + 1);
+//				moles.get(i).setScale(scale);
+//				// moles.get(i).runAction(
+//				// MoveTo.action(1.0f, (int) (s.width * 0.5)
+//				// + ((i - 5) * 100), s.height / 2));
+//			}
 
 			addChild(mainNode);
-			String []_dpi = {"ldpi","mdpi","hdpi","xhdpi"};
+			String[] _dpi = { "ldpi", "mdpi", "hdpi", "xhdpi" };
 			String prefix = "button_";
 			String state_disable = "disable_";
 			String state_select = "select_";
 			String state_normal = "normal_";
-			String[] buttons = { "add_",
-					"minus_","confirm_"};
+			String[] buttons = { "add_", "minus_", "confirm_" };
 			String dpi = _dpi[0];
 			String ext = ".png";
-			
-			
-			
-			if(s.width<=320)
-			{
+
+			if (s.width <= 320) {
 				dpi = _dpi[0];
-			}else if(s.width<=480)
-			{
+			} else if (s.width <= 480) {
 				dpi = _dpi[1];
-			}else if(s.width<=860)
-			{
+			} else if (s.width <= 860) {
 				dpi = _dpi[2];
-			}
-			else if(s.width<=1200)
-			{
+			} else if (s.width <= 1200) {
 				dpi = _dpi[3];
-			}
-			else 
-			{
+			} else {
 				dpi = _dpi[0];
 			}
 			List<String> imageFiles = new ArrayList<String>();
-			for(int i = 0 ; i < buttons.length ;i++)
-			{
-			
-				imageFiles.add(prefix+buttons[i]+state_normal+dpi+ext);
-				imageFiles.add(prefix+buttons[i]+state_select+dpi+ext);
-				imageFiles.add(prefix+buttons[i]+state_disable+dpi+ext);
+			for (int i = 0; i < buttons.length; i++) {
+
+				imageFiles.add(prefix + buttons[i] + state_normal + dpi + ext);
+				imageFiles.add(prefix + buttons[i] + state_select + dpi + ext);
+				imageFiles.add(prefix + buttons[i] + state_disable + dpi + ext);
 
 			}
 			descriptions = new HashMap<String, String>();
 			MenuItemSprite item1 = MenuItemAtlasSprite.item(
-					Sprite.sprite(imageFiles.get(0)), Sprite.sprite(imageFiles.get(1)),
+					Sprite.sprite(imageFiles.get(0)),
+					Sprite.sprite(imageFiles.get(1)),
 					Sprite.sprite(imageFiles.get(2)), this, "addMole");
 			MenuItemSprite item2 = MenuItemAtlasSprite.item(
-					Sprite.sprite(imageFiles.get(3)), Sprite.sprite(imageFiles.get(4)),
+					Sprite.sprite(imageFiles.get(3)),
+					Sprite.sprite(imageFiles.get(4)),
 					Sprite.sprite(imageFiles.get(5)), this, "minusMole");
-			
-			MenuItemSprite item3 = MenuItemAtlasSprite.item(
-					Sprite.sprite(imageFiles.get(6)), Sprite.sprite(imageFiles.get(7)),
-					Sprite.sprite(imageFiles.get(8)), this, "confirm");
-			
-//			MenuItemSprite item4 = MenuItemAtlasSprite.item(
-//					Sprite.sprite(imageFiles.get(15)), Sprite.sprite(imageFiles.get(16)),
-//					Sprite.sprite(imageFiles.get(17)), this, "cancel");
-//			MenuItemSprite item5 = MenuItemAtlasSprite.item(
-//					Sprite.sprite(imageFiles.get(6)), Sprite.sprite(imageFiles.get(7)),
-//					Sprite.sprite(imageFiles.get(8)), this, "FacebookAction");
-//			MenuItemSprite item6 = MenuItemAtlasSprite.item(
-//					Sprite.sprite(imageFiles.get(9)), Sprite.sprite(imageFiles.get(10)),
-//					Sprite.sprite(imageFiles.get(11)), this, "SaveImageToGallery");
 
-			menu1 = org.cocos2d.menus.Menu.menu(
-					item3, item2, item1);
-//			menu2 = org.cocos2d.menus.Menu.menu(
-//					item6, item5, item4);
+			MenuItemSprite item3 = MenuItemAtlasSprite.item(
+					Sprite.sprite(imageFiles.get(6)),
+					Sprite.sprite(imageFiles.get(7)),
+					Sprite.sprite(imageFiles.get(8)), this, "confirm");
+
+			// MenuItemSprite item4 = MenuItemAtlasSprite.item(
+			// Sprite.sprite(imageFiles.get(15)),
+			// Sprite.sprite(imageFiles.get(16)),
+			// Sprite.sprite(imageFiles.get(17)), this, "cancel");
+			// MenuItemSprite item5 = MenuItemAtlasSprite.item(
+			// Sprite.sprite(imageFiles.get(6)),
+			// Sprite.sprite(imageFiles.get(7)),
+			// Sprite.sprite(imageFiles.get(8)), this, "FacebookAction");
+			// MenuItemSprite item6 = MenuItemAtlasSprite.item(
+			// Sprite.sprite(imageFiles.get(9)),
+			// Sprite.sprite(imageFiles.get(10)),
+			// Sprite.sprite(imageFiles.get(11)), this, "SaveImageToGallery");
+
+			menu1 = org.cocos2d.menus.Menu.menu(item3, item2, item1);
+
+			// menu2 = org.cocos2d.menus.Menu.menu(
+			// item6, item5, item4);
 			// menu.alignItemsVertically();
 			menu1.alignItemsHorizontally(10);
 			menu1.setPosition(menu1.getPositionX(), item1.getHeight() * 0.5f);
 			addChild(menu1);
-			
-//			menu2.alignItemsHorizontally(10);
-//			menu2.setPosition(menu2.getPositionX(), item1.getHeight() * 0.5f);
-			
+
+			// menu2.alignItemsHorizontally(10);
+			// menu2.setPosition(menu2.getPositionX(), item1.getHeight() *
+			// 0.5f);
+
 			this.myListener = myListener;
 
 			setupMole(tragetPlist);
 			setupDescription();
 		}
-		public void confirm()
-		{
-//			addChild(menu2);
-//			removeChild(menu1,false);
-			msg = "Explain\n";
-			Map <String ,String>tempMap = new HashMap<String,String>();
-			//check mole on stage
-			for(int i = 0 ; i < curentMoleIndex ; i++)
-			{
-				float x = moles.get(i).getPositionX();
-				float y = moles.get(i).getPositionY();
-//				Log.v("mole pos"," x "+x+" y "+y);
-				for(MoleDescription d : moleArray)
-				{
-					
-					float t = (float) (d.getPositionY()-d.getHeight()*0.5)-50;
-					float l = (float) (d.getPositionX()-d.getWidth()*0.5)-50;
-					float r = (float) (d.getPositionX()-d.getWidth()*0.5)+50;
-					float b = (float) (d.getPositionY()-d.getHeight()*0.5)+50;
-//					Log.v("mole pos"," top "+t+" left "+l+" right "+r+" bottom "+b);
-					if(x > l && x < r && y < b && y > t)
-					{
-						if(tempMap.get(d.getDescription())==null)
-						{
-							tempMap.put(d.getDescription(),descriptions.get(d.getDescription()));
-							msg+="\n>"+descriptions.get(d.getDescription());
+
+		public void confirm() {
+			
+			if (currentMoleIndex > 0) {
+				// addChild(menu2);
+				// removeChild(menu1,false);
+				msg = "Explain\n";
+				Map<String, String> tempMap = new HashMap<String, String>();
+				// check mole on stage
+				for (int i = 0; i < currentMoleIndex; i++) {
+					float x = moles.get(i).getPositionX();
+					float y = moles.get(i).getPositionY();
+					// Log.v("mole pos"," x "+x+" y "+y);
+					for (MoleDescription d : moleArray) {
+
+						float t = (float) (d.getPositionY() - d.getHeight() * 0.5) - 50;
+						float l = (float) (d.getPositionX() - d.getWidth() * 0.5) - 50;
+						float r = (float) (d.getPositionX() - d.getWidth() * 0.5) + 50;
+						float b = (float) (d.getPositionY() - d.getHeight() * 0.5) + 50;
+						// Log.v("mole pos"," top "+t+" left "+l+" right "+r+" bottom "+b);
+						if (x > l && x < r && y < b && y > t) {
+							if (tempMap.get(d.getDescription()) == null) {
+								tempMap.put(d.getDescription(),
+										descriptions.get(d.getDescription()));
+								msg += "\n>"
+										+ descriptions.get(d.getDescription());
+							}
+							break;
+
 						}
-						break;
-						
 					}
 				}
 			}
-			
-		
-			myPopUp = setupPopWindow(msg,(Activity)mContext);
+
+			myPopUp = setupPopWindow(msg, (Activity) mContext);
 		}
-//		public void cancel()
-//		{
-//			addChild(menu1);
-//			removeChild(menu2,false);
-//		}
+
+		// public void cancel()
+		// {
+		// addChild(menu1);
+		// removeChild(menu2,false);
+		// }
 		private void setupDescription() {
 			PListXMLParser parser = new PListXMLParser();
 			PListXMLHandler pHandler = new PListXMLHandler();
-			
+
 			PListParserListener parseListener = new PListParserListener() {
 
 				@Override
 				public void onPListParseDone(PList pList, ParseMode mode) {
-					
-					Dict root = (Dict)pList.getRootElement();
-					Array objects = (Array)root.getConfigurationObject("items");
-					for(PListObject o : objects)
-					{
-						Dict d = (Dict)o;
-						com.longevitysoft.android.xml.plist.domain.String s = (com.longevitysoft.android.xml.plist.domain.String)d.getConfigurationObject("description");
-						com.longevitysoft.android.xml.plist.domain.String n = (com.longevitysoft.android.xml.plist.domain.String)d.getConfigurationObject("name");
-//						msg+=s.getValue()+"\n";
-//						Log.v("setupDescription:name",n.getValue());
-//						Log.v("setupDescription:descritpion",s.getValue());
-						msg+=">"+s.getValue()+"\n";
+
+					Dict root = (Dict) pList.getRootElement();
+					Array objects = (Array) root
+							.getConfigurationObject("items");
+					for (PListObject o : objects) {
+						Dict d = (Dict) o;
+						com.longevitysoft.android.xml.plist.domain.String s = (com.longevitysoft.android.xml.plist.domain.String) d
+								.getConfigurationObject("description");
+						com.longevitysoft.android.xml.plist.domain.String n = (com.longevitysoft.android.xml.plist.domain.String) d
+								.getConfigurationObject("name");
+						// msg+=s.getValue()+"\n";
+						// Log.v("setupDescription:name",n.getValue());
+						// Log.v("setupDescription:descritpion",s.getValue());
+						msg += ">" + s.getValue() + "\n";
 						descriptions.put(n.getValue(), s.getValue());
 					}
-					
-//					Label label = Label.label(msg, "DroidSans", 32);
-//					label.setColor(new CCColor3B(255,0,255));
-//					addChild(label);
-					
+
+					// Label label = Label.label(msg, "DroidSans", 32);
+					// label.setColor(new CCColor3B(255,0,255));
+					// addChild(label);
+
 				}
-				
+
 			};
 			pHandler.setParseListener(parseListener);
 			parser.setHandler(pHandler);
@@ -479,46 +490,51 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 				e.printStackTrace();
 			}
 		}
+
 		private void setupMole(String _targetPlist) {
 			Log.v("MainLayer", _targetPlist);
 			moleArray = new ArrayList<MoleDescription>();
 			// TODO Auto-generated method stub
 			PListXMLParser parser = new PListXMLParser();
 			PListXMLHandler pHandler = new PListXMLHandler();
-			
-			PListParserListener parseListener = new PListParserListener() {
 
-				
+			PListParserListener parseListener = new PListParserListener() {
 
 				@Override
 				public void onPListParseDone(PList pList, ParseMode mode) {
 					CCSize s = Director.sharedDirector().winSize();
-					Dict root = (Dict)pList.getRootElement();
-					Array objects = (Array)root.getConfigurationObject("items");
-					for(PListObject o : objects)
-					{
-						Dict d = (Dict)o;
-						
-						String name = ((com.longevitysoft.android.xml.plist.domain.String)d.getConfigurationObject("name")).getValue();
-						
-						Dict position = (Dict)d.getConfigurationObject("position");
-						int x = ((com.longevitysoft.android.xml.plist.domain.Integer)position.getConfigurationObject("x")).getValue();
-						int y = ((com.longevitysoft.android.xml.plist.domain.Integer)position.getConfigurationObject("y")).getValue();
-						
-						Log.v("onPListParseDone ","name :"+name);
-						
-						
+					Dict root = (Dict) pList.getRootElement();
+					Array objects = (Array) root
+							.getConfigurationObject("items");
+					for (PListObject o : objects) {
+						Dict d = (Dict) o;
+
+						String name = ((com.longevitysoft.android.xml.plist.domain.String) d
+								.getConfigurationObject("name")).getValue();
+
+						Dict position = (Dict) d
+								.getConfigurationObject("position");
+						int x = ((com.longevitysoft.android.xml.plist.domain.Integer) position
+								.getConfigurationObject("x")).getValue();
+						int y = ((com.longevitysoft.android.xml.plist.domain.Integer) position
+								.getConfigurationObject("y")).getValue();
+
+						Log.v("onPListParseDone ", "name :" + name);
+
 						Label label = Label.label(name, "DroidSans", 32);
-						label.setColor(new CCColor3B(255,0,255));
-						float scale = s.width/320.0f;
-						Log.v("onPListParseDone" ,"Scale "+ scale + " position " + String.valueOf(x*scale)+" "+String.valueOf(y*scale));
-						MoleDescription mole = new MoleDescription(label,(float)(x*scale),s.height-(y*scale),name);
-						addChild(mole);
-			            moleArray.add(mole);
-			            
-//			            label.setPosition();
+						label.setColor(new CCColor3B(255, 0, 255));
+						float scale = s.width / 320.0f;
+						Log.v("onPListParseDone", "Scale " + scale
+								+ " position " + String.valueOf(x * scale)
+								+ " " + String.valueOf(y * scale));
+						MoleDescription mole = new MoleDescription(label,
+								(float) (x * scale), s.height - (y * scale),
+								name);
+						// addChild(mole);
+						moleArray.add(mole);
+
+						// label.setPosition();
 					}
-					
 
 				}
 
@@ -577,20 +593,20 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 
 		public void addMole() {
 			Log.d("MainLayer",
-					"addMole curentMoleIndex:"
-							+ String.valueOf(curentMoleIndex));
+					"addMole currentMoleIndex:"
+							+ String.valueOf(currentMoleIndex));
 
-			if (curentMoleIndex < moles.size()) {
+			if (currentMoleIndex < moles.size()) {
 				CCSize s = Director.sharedDirector().winSize();
 
-				moles.get(curentMoleIndex)
+				moles.get(currentMoleIndex)
 						.runAction(
 								MoveTo.action(0.5f, (int) (s.width * 0.5),
 										s.height / 2));
-				curentMoleIndex++;
+				currentMoleIndex++;
 			}
-			if (curentMoleIndex >= moles.size()) {
-				curentMoleIndex = moles.size() - 1;
+			if (currentMoleIndex >= moles.size()) {
+				currentMoleIndex = moles.size() - 1;
 				// disable addButton;
 			}
 
@@ -598,20 +614,20 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 
 		public void minusMole() {
 			Log.d("MainLayer",
-					"minusMole curentMoleIndex:"
-							+ String.valueOf(curentMoleIndex));
+					"minusMole currentMoleIndex:"
+							+ String.valueOf(currentMoleIndex));
 
-			if (curentMoleIndex > -1) {
+			if (currentMoleIndex > -1) {
 				// enable minusButton;
 				CCSize s = Director.sharedDirector().winSize();
-				if (moles.get(curentMoleIndex).isRunning())
-					moles.get(curentMoleIndex).stopAllActions();
-				moles.get(curentMoleIndex).setPosition((int) (s.width * 0.5),
+				if (moles.get(currentMoleIndex).isRunning())
+					moles.get(currentMoleIndex).stopAllActions();
+				moles.get(currentMoleIndex).setPosition((int) (s.width * 0.5),
 						-50);
-				curentMoleIndex--;
+				currentMoleIndex--;
 			}
-			if (curentMoleIndex < 0) {
-				curentMoleIndex = 0;
+			if (currentMoleIndex < 0) {
+				currentMoleIndex = 0;
 				// disable minusButton;
 			}
 		}
@@ -695,10 +711,11 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 		public void saveBitmap(Bitmap bmp) {
 			Calendar cal = Calendar.getInstance();
 			SimpleDateFormat s = new SimpleDateFormat("ddMMyyyyhhmmss");
-			
-			File file = new File(Environment.getExternalStoragePublicDirectory(
-			        Environment.DIRECTORY_PICTURES
-				    )+"/"+s.format(cal.getTime())+".jpg");
+
+			File file = new File(
+					Environment
+							.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+							+ "/" + s.format(cal.getTime()) + ".jpg");
 			try {
 				file.createNewFile();
 				FileOutputStream fos = new FileOutputStream(file);
@@ -748,7 +765,7 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 	private PendingAction pendingAction = PendingAction.NONE;
 	private static final List<String> PERMISSIONS = Arrays
 			.asList("publish_actions");
-	
+
 	private UiLifecycleHelper uiHelper;
 	private Session.StatusCallback callback = new Session.StatusCallback() {
 		@Override
@@ -891,12 +908,13 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 						}
 					});
 			Bundle params = request.getParameters();
-			
+
 			SharedPreferences prefs = PreferenceManager
 					.getDefaultSharedPreferences(this);
-			String name = prefs.getString(getString(R.string.keyUserName),"HolyTricky");
-					
-			params.putString("message",name+"\n"+ mainLayer.msg);
+			String name = prefs.getString(getString(R.string.keyUserName),
+					"HolyTricky");
+
+			params.putString("message", name + "\n" + mainLayer.msg);
 
 			request.executeAsync();
 		} else {
@@ -998,101 +1016,107 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 		// TODO Auto-generated method stub
 		mProgressHUD.dismiss();
 	}
-	private static PopupWindow setupPopWindow(String text , Activity activity)
-	{
+
+	private static PopupWindow setupPopWindow(String text, Activity activity) {
 		final PopupWindow popUp = new PopupWindow(activity);
-		final View currentView = activity.getWindow().getDecorView().findViewById(android.R.id.content);	
-		LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+		final View currentView = activity.getWindow().getDecorView()
+				.findViewById(android.R.id.content);
+		LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT,
+				LayoutParams.MATCH_PARENT);
 		final RelativeLayout fl = new RelativeLayout(activity);
 		fl.setLayoutParams(params);
-		
-		//ll.setOrientation(LinearLayout.VERTICAL);
-	
+
+		// ll.setOrientation(LinearLayout.VERTICAL);
+
 		final ScrollView scrollview = new ScrollView(activity);
-//		final TextView title= new TextView(activity);
-//		title.setText("Explain");
-//		title.setGravity(Gravity.CENTER_HORIZONTAL);
-//		title.setMovementMethod(LinkMovementMethod.getInstance());
-		
-		final TextView tv= new TextView(activity);
+		// final TextView title= new TextView(activity);
+		// title.setText("Explain");
+		// title.setGravity(Gravity.CENTER_HORIZONTAL);
+		// title.setMovementMethod(LinkMovementMethod.getInstance());
+
+		final TextView tv = new TextView(activity);
 		tv.setText(text);
-		
+
 		tv.setMovementMethod(LinkMovementMethod.getInstance());
 		tv.setGravity(Gravity.CENTER_HORIZONTAL);
-//		scrollview.addView(title, new ViewGroup.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT));
-		scrollview.addView(tv, new ViewGroup.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT));
-		scrollview.setLayoutParams(new ViewGroup.LayoutParams(LayoutParams.WRAP_CONTENT, (int) (currentView.getHeight())));
+		// scrollview.addView(title, new
+		// ViewGroup.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT));
+		scrollview.addView(tv, new ViewGroup.LayoutParams(
+				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+		scrollview.setLayoutParams(new ViewGroup.LayoutParams(
+				LayoutParams.WRAP_CONTENT, (int) (currentView.getHeight())));
 		fl.addView(scrollview);
-		
+
 		final LinearLayout hl = new LinearLayout(activity);
-		RelativeLayout.LayoutParams hp = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		RelativeLayout.LayoutParams hp = new RelativeLayout.LayoutParams(
+				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 		hp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 		hp.addRule(RelativeLayout.CENTER_HORIZONTAL);
-		
+
 		hl.setLayoutParams(hp);
-		
+
 		hl.setOrientation(LinearLayout.HORIZONTAL);
-		
-		
+
 		float width = (float) (currentView.getWidth());
 		Button buttonCancel = new Button(activity);
 		buttonCancel.setText("Cancel");
-		buttonCancel.setGravity(Gravity.BOTTOM|Gravity.CENTER);
-		buttonCancel.setLayoutParams(new LayoutParams((int) (width * 0.3f),LayoutParams.WRAP_CONTENT));
-		buttonCancel.setOnClickListener(new OnClickListener()
-		{
+		buttonCancel.setGravity(Gravity.BOTTOM | Gravity.CENTER);
+		buttonCancel.setLayoutParams(new LayoutParams((int) (width * 0.3f),
+				LayoutParams.WRAP_CONTENT));
+		buttonCancel.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
-				Log.v(LOG_TAG,"Cancel 1 Click");
-//				mainLayer.cancel();
+				Log.v(LOG_TAG, "Cancel 1 Click");
+				// mainLayer.cancel();
 				popUp.dismiss();
 			}
-			
+
 		});
-		
-		Button buttonFacebook = new Button(activity );
+
+		Button buttonFacebook = new Button(activity);
 		buttonFacebook.setText("Facebook");
-		buttonFacebook.setGravity(Gravity.BOTTOM|Gravity.CENTER);
-		buttonFacebook.setLayoutParams(new LayoutParams((int) (width * 0.3f),LayoutParams.WRAP_CONTENT));
-		buttonFacebook.setOnClickListener(new OnClickListener()
-		{
+		buttonFacebook.setGravity(Gravity.BOTTOM | Gravity.CENTER);
+		buttonFacebook.setLayoutParams(new LayoutParams((int) (width * 0.3f),
+				LayoutParams.WRAP_CONTENT));
+		buttonFacebook.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
-				Log.v(LOG_TAG,"Button 2 Click");
+				Log.v(LOG_TAG, "Button 2 Click");
 				mainLayer.FacebookAction();
 			}
-			
+
 		});
 		Button buttonSave = new Button(activity);
-		
+
 		buttonSave.setText("Save");
-		buttonSave.setGravity(Gravity.BOTTOM|Gravity.CENTER);
-		buttonSave.setLayoutParams(new LayoutParams((int) (width * 0.3f),LayoutParams.WRAP_CONTENT));
-		buttonSave.setOnClickListener(new OnClickListener()
-		{
+		buttonSave.setGravity(Gravity.BOTTOM | Gravity.CENTER);
+		buttonSave.setLayoutParams(new LayoutParams((int) (width * 0.3f),
+				LayoutParams.WRAP_CONTENT));
+		buttonSave.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
-				Log.v(LOG_TAG,"Button 3 Click");
+				Log.v(LOG_TAG, "Button 3 Click");
 				mainLayer.SaveImageToGallery();
 			}
-			
+
 		});
 		hl.addView(buttonCancel);
 		hl.addView(buttonFacebook);
 		hl.addView(buttonSave);
-		
+
 		fl.addView(hl);
 
 		popUp.setContentView(fl);
 		popUp.showAtLocation(currentView, Gravity.BOTTOM, 0, 0);
- 
-		popUp.update(0, 0, (int) (currentView.getWidth()),currentView.getHeight()); 
+
+		popUp.update(0, 0, (int) (currentView.getWidth()),
+				currentView.getHeight());
 		return popUp;
 	}
 }
