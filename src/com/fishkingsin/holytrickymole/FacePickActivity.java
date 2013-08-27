@@ -85,8 +85,10 @@ public class FacePickActivity extends FragmentActivity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		mContext = this;
 		System.gc();
+			
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.facepick_activity);
+		View currentView = this.getWindow().getDecorView().findViewById(android.R.id.content);
 		TabHost mTabHost = (TabHost) findViewById(android.R.id.tabhost);
 		mTabHost.setup();
 		Button creditButton = (Button) findViewById(R.id.credit_button);
@@ -111,7 +113,7 @@ public class FacePickActivity extends FragmentActivity {
 
 		gridview1 = (GridView) findViewById(R.id.gridview1);
 		gridview1.setAdapter(new ImageAdapter(this, mImageMaleIds));
-
+//		gridview1.setColumnWidth((int) (gridview1.getWidth()*0.3f));
 		gridview1.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View v,
 					int position, long id) {
@@ -135,6 +137,7 @@ public class FacePickActivity extends FragmentActivity {
 			}
 		});
 		gridview2 = (GridView) findViewById(R.id.gridview2);
+//		gridview2.setColumnWidth((int) (gridview2.getWidth()*0.3));
 		gridview2.setAdapter(new ImageAdapter(this, mImageFemaleIds));
 
 		gridview2.setOnItemClickListener(new OnItemClickListener() {

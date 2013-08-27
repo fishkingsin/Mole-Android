@@ -84,6 +84,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
@@ -95,7 +96,7 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 			.getSimpleName();
 	private CCGLSurfaceView mGLSurfaceView;
 	private static Context mContext;
-	private MainLayer mainLayer;
+	private static MainLayer mainLayer;
 	public static PopupWindow myPopUp;
 	public static Bitmap bitmap;
 	public static boolean bSaved = false;
@@ -259,7 +260,7 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 		public String tragetPlist = "";
 		private boolean bPostFB = false;
 		private ArrayList<MoleDescription> moleArray;
-		org.cocos2d.menus.Menu menu2;
+//		org.cocos2d.menus.Menu menu2;
 		org.cocos2d.menus.Menu menu1;
 		String msg="";
 		public MainLayer(MyListener myListener) {
@@ -304,7 +305,7 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 			String state_select = "select_";
 			String state_normal = "normal_";
 			String[] buttons = { "add_",
-					"minus_","facebook_","save_","confirm_","cancel_" };
+					"minus_","confirm_"};
 			String dpi = _dpi[0];
 			String ext = ".png";
 			
@@ -346,30 +347,30 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 					Sprite.sprite(imageFiles.get(5)), this, "minusMole");
 			
 			MenuItemSprite item3 = MenuItemAtlasSprite.item(
-					Sprite.sprite(imageFiles.get(12)), Sprite.sprite(imageFiles.get(13)),
-					Sprite.sprite(imageFiles.get(14)), this, "confirm");
-			
-			MenuItemSprite item4 = MenuItemAtlasSprite.item(
-					Sprite.sprite(imageFiles.get(15)), Sprite.sprite(imageFiles.get(16)),
-					Sprite.sprite(imageFiles.get(17)), this, "cancel");
-			MenuItemSprite item5 = MenuItemAtlasSprite.item(
 					Sprite.sprite(imageFiles.get(6)), Sprite.sprite(imageFiles.get(7)),
-					Sprite.sprite(imageFiles.get(8)), this, "FacebookAction");
-			MenuItemSprite item6 = MenuItemAtlasSprite.item(
-					Sprite.sprite(imageFiles.get(9)), Sprite.sprite(imageFiles.get(10)),
-					Sprite.sprite(imageFiles.get(11)), this, "SaveImageToGallery");
+					Sprite.sprite(imageFiles.get(8)), this, "confirm");
+			
+//			MenuItemSprite item4 = MenuItemAtlasSprite.item(
+//					Sprite.sprite(imageFiles.get(15)), Sprite.sprite(imageFiles.get(16)),
+//					Sprite.sprite(imageFiles.get(17)), this, "cancel");
+//			MenuItemSprite item5 = MenuItemAtlasSprite.item(
+//					Sprite.sprite(imageFiles.get(6)), Sprite.sprite(imageFiles.get(7)),
+//					Sprite.sprite(imageFiles.get(8)), this, "FacebookAction");
+//			MenuItemSprite item6 = MenuItemAtlasSprite.item(
+//					Sprite.sprite(imageFiles.get(9)), Sprite.sprite(imageFiles.get(10)),
+//					Sprite.sprite(imageFiles.get(11)), this, "SaveImageToGallery");
 
 			menu1 = org.cocos2d.menus.Menu.menu(
 					item3, item2, item1);
-			menu2 = org.cocos2d.menus.Menu.menu(
-					item6, item5, item4);
+//			menu2 = org.cocos2d.menus.Menu.menu(
+//					item6, item5, item4);
 			// menu.alignItemsVertically();
 			menu1.alignItemsHorizontally(10);
 			menu1.setPosition(menu1.getPositionX(), item1.getHeight() * 0.5f);
 			addChild(menu1);
 			
-			menu2.alignItemsHorizontally(10);
-			menu2.setPosition(menu2.getPositionX(), item1.getHeight() * 0.5f);
+//			menu2.alignItemsHorizontally(10);
+//			menu2.setPosition(menu2.getPositionX(), item1.getHeight() * 0.5f);
 			
 			this.myListener = myListener;
 
@@ -378,15 +379,15 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 		}
 		public void confirm()
 		{
-			addChild(menu2);
-			removeChild(menu1,false);
+//			addChild(menu2);
+//			removeChild(menu1,false);
 			myPopUp = setupPopWindow(msg,(Activity)mContext);
 		}
-		public void cancel()
-		{
-			addChild(menu1);
-			removeChild(menu2,false);
-		}
+//		public void cancel()
+//		{
+//			addChild(menu1);
+//			removeChild(menu2,false);
+//		}
 		private void setupDescription() {
 			PListXMLParser parser = new PListXMLParser();
 			PListXMLHandler pHandler = new PListXMLHandler();
@@ -928,11 +929,6 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 		}
 	}
 
-	// private boolean hasPublishPermission() {
-	// Session session = Session.getActiveSession();
-	// return session != null &&
-	// session.getPermissions().contains("publish_actions");
-	// }
 	private boolean hasPublishPermission() {
 		Session session = Session.getActiveSession();
 		return session != null
@@ -944,13 +940,14 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 		// TODO Auto-generated method stub
 		mProgressHUD.dismiss();
 	}
-	static PopupWindow setupPopWindow(String text , Activity activity)
+	private static PopupWindow setupPopWindow(String text , Activity activity)
 	{
 		final PopupWindow popUp = new PopupWindow(activity);
 		final View currentView = activity.getWindow().getDecorView().findViewById(android.R.id.content);	
 		LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-		final RelativeLayout rl = new RelativeLayout(activity);
-		rl.setLayoutParams(params);
+		final RelativeLayout fl = new RelativeLayout(activity);
+		fl.setLayoutParams(params);
+		
 		//ll.setOrientation(LinearLayout.VERTICAL);
 	
 		final ScrollView scrollview = new ScrollView(activity);
@@ -958,79 +955,80 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 		tv.setText(Html.fromHtml(text));
 	
 		tv.setMovementMethod(LinkMovementMethod.getInstance());
-		LayoutParams sparams = new LayoutParams(LayoutParams.MATCH_PARENT, (int) (currentView.getHeight() * 0.8));
-		scrollview.addView(tv, sparams);
-		scrollview.setLayoutParams(new ViewGroup.LayoutParams(LayoutParams.MATCH_PARENT, (int) (currentView.getHeight() * 0.8)));
-		rl.addView(scrollview);
+		
+		
+		scrollview.addView(tv, new ViewGroup.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT));
+		scrollview.setLayoutParams(new ViewGroup.LayoutParams(LayoutParams.WRAP_CONTENT, (int) (currentView.getHeight() * 0.8)));
+		fl.addView(scrollview);
 		
 		final LinearLayout hl = new LinearLayout(activity);
-		hl.setLayoutParams(params);
+		RelativeLayout.LayoutParams hp = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		hp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+		hp.addRule(RelativeLayout.CENTER_HORIZONTAL);
+		
+		hl.setLayoutParams(hp);
+		
 		hl.setOrientation(LinearLayout.HORIZONTAL);
-		Button button1 = new Button(activity);
-		button1.setOnClickListener(new OnClickListener()
+		
+		
+		float width = (float) (currentView.getWidth() * 0.8);
+		Button buttonCancel = new Button(activity);
+		buttonCancel.setText("Cancel");
+		buttonCancel.setGravity(Gravity.BOTTOM|Gravity.CENTER);
+		buttonCancel.setLayoutParams(new LayoutParams((int) (width * 0.3f),LayoutParams.WRAP_CONTENT));
+		buttonCancel.setOnClickListener(new OnClickListener()
 		{
 
 			@Override
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
-				Log.v(LOG_TAG,"Button 1 Click");
+				Log.v(LOG_TAG,"Cancel 1 Click");
+//				mainLayer.cancel();
+				popUp.dismiss();
 			}
 			
 		});
-		button1.setText("Cancel");
-		button1.setGravity(Gravity.BOTTOM);
-		Button button2 = new Button(activity);
-		button2.setText("Facebook");
-		button2.setGravity(Gravity.BOTTOM);
-		button2.setOnClickListener(new OnClickListener()
+		
+		Button buttonFacebook = new Button(activity);
+		buttonFacebook.setText("Facebook");
+		buttonFacebook.setGravity(Gravity.BOTTOM|Gravity.CENTER);
+		buttonFacebook.setLayoutParams(new LayoutParams((int) (width * 0.3f),LayoutParams.WRAP_CONTENT));
+		buttonFacebook.setOnClickListener(new OnClickListener()
 		{
 
 			@Override
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
 				Log.v(LOG_TAG,"Button 2 Click");
+				mainLayer.FacebookAction();
 			}
 			
 		});
-		Button button3 = new Button(activity);
-		button3.setText("Save");
-		button3.setGravity(Gravity.BOTTOM);
-		button3.setOnClickListener(new OnClickListener()
+		Button buttonSave = new Button(activity);
+		
+		buttonSave.setText("Save");
+		buttonSave.setGravity(Gravity.BOTTOM|Gravity.CENTER);
+		buttonSave.setLayoutParams(new LayoutParams((int) (width * 0.3f),LayoutParams.WRAP_CONTENT));
+		buttonSave.setOnClickListener(new OnClickListener()
 		{
 
 			@Override
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
 				Log.v(LOG_TAG,"Button 3 Click");
+				mainLayer.SaveImageToGallery();
 			}
 			
 		});
-		hl.addView(button1);
-		hl.addView(button2);
-		hl.addView(button3);
-		hl.setGravity(Gravity.BOTTOM);
-		rl.addView(hl);
-	
-		popUp.setContentView(rl);
-	
+		hl.addView(buttonCancel);
+		hl.addView(buttonFacebook);
+		hl.addView(buttonSave);
 		
+		fl.addView(hl);
+
+		popUp.setContentView(fl);
 		popUp.showAtLocation(currentView, Gravity.BOTTOM, 0, 0);
-	
-		popUp.setFocusable(false); popUp.setOutsideTouchable(true);
-		popUp.setTouchable(true);
-	
-//		popUp.setTouchInterceptor(new OnTouchListener() {
-	
-//		@Override public boolean onTouch(View v, MotionEvent event) 
-//		{
-//			if(event.getAction() == MotionEvent.ACTION_OUTSIDE) { 
-//				popUp.dismiss();
-//				return true; 
-//		}
-//			return false; 
-//			}
-//		
-//		}); 
+ 
 		popUp.update(0, 0, (int) (currentView.getWidth() * 0.8),currentView.getHeight()); 
 		return popUp;
 	}
