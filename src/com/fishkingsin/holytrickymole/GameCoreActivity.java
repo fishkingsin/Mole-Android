@@ -65,6 +65,7 @@ import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
@@ -170,7 +171,7 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 			}
 
 		};
-		String targetPlist = " ";
+//		String targetPlist = " ";
 		mainLayer = new MainLayer(myListener);
 		scene.addChild(mainLayer, 2);
 
@@ -257,8 +258,7 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 		int curentMoleIndex = 0;
 		public String tragetPlist = "";
 		private boolean bPostFB = false;
-		private PList descriptionPlist = null;
-		private ArrayList moleArray;
+		private ArrayList<MoleDescription> moleArray;
 		org.cocos2d.menus.Menu menu2;
 		org.cocos2d.menus.Menu menu1;
 		String msg="";
@@ -395,9 +395,6 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 
 				@Override
 				public void onPListParseDone(PList pList, ParseMode mode) {
-					descriptionPlist = pList;
-					
-					
 					Dict root = (Dict)pList.getRootElement();
 					Array objects = (Array)root.getConfigurationObject("items");
 					for(PListObject o : objects)
@@ -647,7 +644,7 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 		}
 
 		public void saveBitmap(Bitmap bmp) {
-			File file = new File("/sdcard/test.jpg");
+			File file = new File(Environment.getExternalStorageDirectory().toString()+"/test.jpg");
 			try {
 				file.createNewFile();
 				FileOutputStream fos = new FileOutputStream(file);

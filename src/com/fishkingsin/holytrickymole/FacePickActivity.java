@@ -13,17 +13,16 @@ import android.support.v4.app.FragmentActivity;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
-import android.view.Window;
 import android.view.View.OnTouchListener;
+import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
@@ -102,8 +101,8 @@ public class FacePickActivity extends FragmentActivity {
 			}
 			
 		});
-		View indicator = LayoutInflater.from(this).inflate(R.layout.tab,
-				(ViewGroup) findViewById(android.R.id.tabs), false);
+//		View indicator = LayoutInflater.from(this).inflate(R.layout.tab,
+//				(ViewGroup) findViewById(android.R.id.tabs), false);
 
 		mTabHost.addTab(mTabHost.newTabSpec(getString(R.string.male))
 				.setIndicator(getString(R.string.male)).setContent(R.id.tab1));
