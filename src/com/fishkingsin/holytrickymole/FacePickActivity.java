@@ -137,6 +137,7 @@ public class FacePickActivity extends FragmentActivity {
 			}
 		});
 		gridview2 = (GridView) findViewById(R.id.gridview2);
+		
 //		gridview2.setColumnWidth((int) (gridview2.getWidth()*0.3));
 		gridview2.setAdapter(new ImageAdapter(this, mImageFemaleIds));
 

@@ -56,10 +56,10 @@
                         android:id="@+id/gridview1"
                         android:layout_width="fill_parent"
                         android:layout_height="fill_parent"
-                        
+                        android:numColumns="3"
                         android:gravity="center"
                         android:horizontalSpacing="10dp"
-                        android:numColumns="auto_fit"
+                       
                         android:stretchMode="columnWidth"
                         android:verticalSpacing="10dp" >
                     </GridView>
@@ -75,10 +75,10 @@
                         android:id="@+id/gridview2"
                         android:layout_width="fill_parent"
                         android:layout_height="fill_parent"
-                        
+                        android:numColumns="3"
                         android:gravity="center"
                         android:horizontalSpacing="10dp"
-                        android:numColumns="auto_fit"
+                        
                         android:stretchMode="columnWidth"
                         android:verticalSpacing="10dp" >
                     </GridView>
