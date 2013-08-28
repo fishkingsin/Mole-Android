@@ -289,10 +289,10 @@ containing a value of this type.
         public static final int com_facebook_usersettingsfragment_login_button=0x7f05001c;
         public static final int com_facebook_usersettingsfragment_logo_image=0x7f05001a;
         public static final int com_facebook_usersettingsfragment_profile_name=0x7f05001b;
-        public static final int credit=0x7f050032;
+        public static final int credit=0x7f050033;
         public static final int credit_button=0x7f050029;
         public static final int editText1=0x7f05002c;
-        public static final int facebook=0x7f050034;
+        public static final int facebook=0x7f050035;
         public static final int facebook_linearlyout=0x7f050021;
         public static final int facebook_share_textfield=0x7f050022;
         public static final int gridview1=0x7f050026;
@@ -300,20 +300,21 @@ containing a value of this type.
         public static final int imageView1=0x7f050024;
         public static final int large=0x7f050002;
         public static final int linearLayoutAd=0x7f05002b;
-        public static final int message=0x7f05002f;
+        public static final int message=0x7f050030;
         public static final int normal=0x7f050001;
+        public static final int pager=0x7f05002e;
         public static final int picker_subtitle=0x7f050019;
         public static final int saved_image=0x7f050007;
-        public static final int saveimage=0x7f050033;
+        public static final int saveimage=0x7f050034;
         public static final int search_box=0x7f050018;
         public static final int small=0x7f050000;
-        public static final int spinnerImageView=0x7f05002e;
+        public static final int spinnerImageView=0x7f05002f;
         public static final int startbutton=0x7f05002d;
         public static final int status=0x7f050005;
         public static final int tab1=0x7f050025;
         public static final int tab2=0x7f050027;
-        public static final int tab_layout=0x7f050030;
-        public static final int text=0x7f050031;
+        public static final int tab_layout=0x7f050031;
+        public static final int text=0x7f050032;
         public static final int title=0x7f050004;
     }
     public static final class layout {

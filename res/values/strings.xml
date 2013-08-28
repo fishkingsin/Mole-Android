@@ -58,6 +58,6 @@
     <string name="banner_bottom">Bottom Banner Ad</string>
     <string name="button_close_to_ad">Button that\'s too close</string>
     <string name="error_receive_ad">Unable to fetch Ad. Waiting for the next refresh.</string>
-    <string name="admob_id">a14b5f8130c17ef</string>
+    <string name="admob_id">a1521c74c858d66</string>
     <string name="ad_covers_content">Ad shouldn\'t cover content!</string>
 </resources>
