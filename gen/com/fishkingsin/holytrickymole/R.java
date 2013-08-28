@@ -289,10 +289,10 @@ containing a value of this type.
         public static final int com_facebook_usersettingsfragment_login_button=0x7f05001c;
         public static final int com_facebook_usersettingsfragment_logo_image=0x7f05001a;
         public static final int com_facebook_usersettingsfragment_profile_name=0x7f05001b;
-        public static final int credit=0x7f050033;
+        public static final int credit=0x7f050032;
         public static final int credit_button=0x7f050029;
         public static final int editText1=0x7f05002c;
-        public static final int facebook=0x7f050035;
+        public static final int facebook=0x7f050034;
         public static final int facebook_linearlyout=0x7f050021;
         public static final int facebook_share_textfield=0x7f050022;
         public static final int gridview1=0x7f050026;
@@ -300,21 +300,20 @@ containing a value of this type.
         public static final int imageView1=0x7f050024;
         public static final int large=0x7f050002;
         public static final int linearLayoutAd=0x7f05002b;
-        public static final int message=0x7f050030;
+        public static final int message=0x7f05002f;
         public static final int normal=0x7f050001;
-        public static final int pager=0x7f05002e;
         public static final int picker_subtitle=0x7f050019;
         public static final int saved_image=0x7f050007;
-        public static final int saveimage=0x7f050034;
+        public static final int saveimage=0x7f050033;
         public static final int search_box=0x7f050018;
         public static final int small=0x7f050000;
-        public static final int spinnerImageView=0x7f05002f;
+        public static final int spinnerImageView=0x7f05002e;
         public static final int startbutton=0x7f05002d;
         public static final int status=0x7f050005;
         public static final int tab1=0x7f050025;
         public static final int tab2=0x7f050027;
-        public static final int tab_layout=0x7f050031;
-        public static final int text=0x7f050032;
+        public static final int tab_layout=0x7f050030;
+        public static final int text=0x7f050031;
         public static final int title=0x7f050004;
     }
     public static final class layout {
@@ -351,13 +350,30 @@ containing a value of this type.
         public static final int main_menu=0x7f0a0001;
     }
     public static final class string {
-        public static final int ad_covers_content=0x7f06002f;
-        public static final int admob_id=0x7f06002e;
-        public static final int app_id=0x7f060027;
+        public static final int Alert_Body=0x7f060036;
+        public static final int Alert_Title=0x7f060035;
+        public static final int Back=0x7f06002e;
+        public static final int Cancel=0x7f06002c;
+        public static final int Confirm=0x7f06002b;
+        public static final int Credit=0x7f060030;
+        public static final int Explain=0x7f060037;
+        public static final int Facebook=0x7f06002a;
+        public static final int Female=0x7f060032;
+        public static final int Male=0x7f060031;
+        public static final int OK=0x7f06002f;
+        public static final int Post_Complete=0x7f060039;
+        public static final int Post_Error=0x7f06003a;
+        public static final int Save=0x7f06002d;
+        public static final int Save_Complete=0x7f060038;
+        public static final int Switch_User=0x7f06003b;
+        public static final int ad_covers_content=0x7f060029;
+        public static final int add=0x7f060034;
+        public static final int admob_id=0x7f060028;
+        public static final int app_id=0x7f060021;
         public static final int app_name=0x7f060019;
-        public static final int banner_bottom=0x7f06002b;
-        public static final int banner_top=0x7f06002a;
-        public static final int button_close_to_ad=0x7f06002c;
+        public static final int banner_bottom=0x7f060025;
+        public static final int banner_top=0x7f060024;
+        public static final int button_close_to_ad=0x7f060026;
         public static final int com_facebook_choose_friends=0x7f06000f;
         public static final int com_facebook_dialogloginactivity_ok_button=0x7f060000;
         public static final int com_facebook_internet_permission_error_message=0x7f060013;
@@ -383,22 +399,18 @@ containing a value of this type.
         public static final int com_facebook_usersettingsfragment_log_in_button=0x7f060008;
         public static final int com_facebook_usersettingsfragment_logged_in=0x7f060009;
         public static final int com_facebook_usersettingsfragment_not_logged_in=0x7f06000a;
-        public static final int credit=0x7f060021;
-        public static final int credit_text=0x7f060028;
-        public static final int dismiss=0x7f060029;
+        public static final int credit_text=0x7f060022;
+        public static final int dismiss=0x7f060023;
         public static final int dummy_button=0x7f06001a;
         public static final int dummy_content=0x7f06001b;
-        public static final int error_receive_ad=0x7f06002d;
-        public static final int facebook=0x7f060026;
-        public static final int female=0x7f06001d;
-        public static final int input_your_name=0x7f060020;
-        public static final int keyImageName=0x7f060023;
-        public static final int keyPlistName=0x7f060024;
-        public static final int keyUserName=0x7f060022;
-        public static final int male=0x7f06001e;
+        public static final int error_receive_ad=0x7f060027;
+        public static final int input_your_name=0x7f06001d;
+        public static final int keyImageName=0x7f06001f;
+        public static final int keyPlistName=0x7f060020;
+        public static final int keyUserName=0x7f06001e;
+        public static final int minus=0x7f060033;
         public static final int pls_wait_txt=0x7f06001c;
-        public static final int saveimage=0x7f060025;
-        public static final int start=0x7f06001f;
+        public static final int successfully_posted_post=0x7f06003c;
     }
     public static final class style {
         /** 

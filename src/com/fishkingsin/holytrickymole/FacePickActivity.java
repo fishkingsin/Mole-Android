@@ -1,7 +1,9 @@
 package com.fishkingsin.holytrickymole;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -39,12 +41,14 @@ public class FacePickActivity extends FragmentActivity {
 	private String[] maleImageName = { "donald_holy-tricky_male@2x.png",
 			"ks_holy-tricky_male@2x.png", "lbt_holy-tricky_male@2x.png",
 			"peter_holy-tricky_male@2x.png", "sh_holy-tricky_male@2x.png",
-			"tse_holy-tricky_male@x2.png", };
+			"tse_holy-tricky_male@x2.png", "blank_face@2x.png",
+			"blank_face@2x.png", "blank_face@2x.png" };
 	private String[] femaleImageName = { "donald_holy-tricky_female@2x.png",
 			"ks_holy-tricky_female@2x.png", "lbt_holy-tricky_female@2x.png",
 			"littlethunder_holy-tricky_female@x2.png",
 			"peter_holy-tricky_female@2x.png", "sh_holy-tricky_female@2x.png",
-			"tse_holy-tricky_female@2x.png", };
+			"tse_holy-tricky_female@2x.png", "blank_face@2x.png",
+			"blank_face@2x.png" };
 	String defaultDescription = "deafult_description.plist";
 
 	private String[] malePlist = { "donald_holy-tricky_male.plist",
@@ -63,7 +67,10 @@ public class FacePickActivity extends FragmentActivity {
 			R.drawable.lbt_holy_tricky_male_thumb,
 			R.drawable.peter_holy_tricky_male_thumb,
 			R.drawable.sh_holy_tricky_male_thumb,
-			R.drawable.tse_holy_tricky_male_thumb, };
+			R.drawable.tse_holy_tricky_male_thumb, 
+			R.drawable.blank_face,
+			R.drawable.blank_face,
+			R.drawable.blank_face,};
 	private Integer[] mImageFemaleIds = {
 			R.drawable.donald_holy_tricky_female_thumb,
 			R.drawable.ks_holy_tricky_female_thumb,
@@ -71,7 +78,9 @@ public class FacePickActivity extends FragmentActivity {
 			R.drawable.littlethunder_holy_tricky_female_thumb,
 			R.drawable.peter_holy_tricky_female_thumb,
 			R.drawable.sh_holy_tricky_female_thumb,
-			R.drawable.tse_holy_tricky_female_thumb, };
+			R.drawable.tse_holy_tricky_female_thumb,
+			R.drawable.blank_face,
+			R.drawable.blank_face,};
 
 	private GridView gridview1 = null;
 	private GridView gridview2 = null;
@@ -85,92 +94,101 @@ public class FacePickActivity extends FragmentActivity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		mContext = this;
 		System.gc();
-			
+
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.facepick_activity);
-		View currentView = this.getWindow().getDecorView().findViewById(android.R.id.content);
+		View currentView = this.getWindow().getDecorView()
+				.findViewById(android.R.id.content);
 		TabHost mTabHost = (TabHost) findViewById(android.R.id.tabhost);
 		mTabHost.setup();
 		Button creditButton = (Button) findViewById(R.id.credit_button);
-		creditButton.setOnClickListener(new OnClickListener()
-		{
+		creditButton.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				myPopUp = Utilities.setupCreditPopWindow(getString(R.string.credit_text),(Activity)mContext);
-				
-			}
-			
-		});
-//		View indicator = LayoutInflater.from(this).inflate(R.layout.tab,
-//				(ViewGroup) findViewById(android.R.id.tabs), false);
+				myPopUp = Utilities.setupCreditPopWindow(
+						getString(R.string.credit_text), (Activity) mContext);
 
-		mTabHost.addTab(mTabHost.newTabSpec(getString(R.string.male))
-				.setIndicator(getString(R.string.male)).setContent(R.id.tab1));
-		mTabHost.addTab(mTabHost.newTabSpec(getString(R.string.female))
-				.setIndicator(getString(R.string.female)).setContent(R.id.tab2));
+			}
+
+		});
+		// View indicator = LayoutInflater.from(this).inflate(R.layout.tab,
+		// (ViewGroup) findViewById(android.R.id.tabs), false);
+
+		mTabHost.addTab(mTabHost.newTabSpec(getString(R.string.Male))
+				.setIndicator(getString(R.string.Male)).setContent(R.id.tab1));
+		mTabHost.addTab(mTabHost.newTabSpec(getString(R.string.Female))
+				.setIndicator(getString(R.string.Female)).setContent(R.id.tab2));
 
 		gridview1 = (GridView) findViewById(R.id.gridview1);
 		gridview1.setAdapter(new ImageAdapter(this, mImageMaleIds));
-//		gridview1.setColumnWidth((int) (gridview1.getWidth()*0.3f));
+		// gridview1.setColumnWidth((int) (gridview1.getWidth()*0.3f));
 		gridview1.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View v,
 					int position, long id) {
+				if (position < malePlist.length) {
+					SharedPreferences prefs = PreferenceManager
+							.getDefaultSharedPreferences(mContext);
+					SharedPreferences.Editor editor = prefs.edit();
+					editor.putString(getString(R.string.keyImageName),
+							maleImageName[position]);
+					editor.putString(getString(R.string.keyPlistName),
+							malePlist[position]);
 
-				SharedPreferences prefs = PreferenceManager
-						.getDefaultSharedPreferences(mContext);
-				SharedPreferences.Editor editor = prefs.edit();
-				editor.putString(getString(R.string.keyImageName),
-						maleImageName[position]);
-				editor.putString(getString(R.string.keyPlistName),
-						malePlist[position]);
-				
-				// Commit the edits!
-				editor.commit();
+					// Commit the edits!
+					editor.commit();
 
-				Intent i = new Intent(FacePickActivity.this,
-						GameCoreActivity.class);
-				startActivity(i);
-				overridePendingTransition(R.anim.slide_in_right,
-						R.anim.slide_out_left);
+					Intent i = new Intent(FacePickActivity.this,
+							GameCoreActivity.class);
+					startActivity(i);
+					overridePendingTransition(R.anim.slide_in_right,
+							R.anim.slide_out_left);
+				}
+				else
+				{
+					createDialog().show();
+				}
 			}
 		});
 		gridview2 = (GridView) findViewById(R.id.gridview2);
-		
-//		gridview2.setColumnWidth((int) (gridview2.getWidth()*0.3));
+
+		// gridview2.setColumnWidth((int) (gridview2.getWidth()*0.3));
 		gridview2.setAdapter(new ImageAdapter(this, mImageFemaleIds));
 
 		gridview2.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View v,
 					int position, long id) {
+				if (position < femalePlist.length) {
+					SharedPreferences prefs = PreferenceManager
+							.getDefaultSharedPreferences(mContext);
+					SharedPreferences.Editor editor = prefs.edit();
+					editor.putString("keyImageName", femaleImageName[position]);
+					editor.putString(getString(R.string.keyPlistName),
+							femalePlist[position]);
+					// Commit the edits!
+					editor.commit();
 
-				SharedPreferences prefs = PreferenceManager
-						.getDefaultSharedPreferences(mContext);
-				SharedPreferences.Editor editor = prefs.edit();
-				editor.putString("keyImageName", femaleImageName[position]);
-				editor.putString(getString(R.string.keyPlistName),
-						femalePlist[position]);
-				// Commit the edits!
-				editor.commit();
-
-				Intent i = new Intent(FacePickActivity.this,
-						GameCoreActivity.class);
-				startActivity(i);
-				overridePendingTransition(R.anim.slide_in_right,
-						R.anim.slide_out_left);
+					Intent i = new Intent(FacePickActivity.this,
+							GameCoreActivity.class);
+					startActivity(i);
+					overridePendingTransition(R.anim.slide_in_right,
+							R.anim.slide_out_left);
+				} else {
+					createDialog().show();
+				}
 			}
 		});
 	}
-	@Override 
-	public void onStop()
-	{
-		if(myPopUp!=null)
-		{
+
+	@Override
+	public void onStop() {
+		if (myPopUp != null) {
 			myPopUp.dismiss();
 		}
 		super.onStop();
 	}
+
 	@Override
 	public void onBackPressed() {
 		// TODO Auto-generated method stub
@@ -217,7 +235,19 @@ public class FacePickActivity extends FragmentActivity {
 
 		}
 	}
-
+	AlertDialog createDialog()
+	{
+		AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        builder.setTitle(getString(R.string.Alert_Title))
+        .setMessage(getString(R.string.Alert_Body))
+               .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                   public void onClick(DialogInterface dialog, int id) {
+                       // User cancelled the dialog
+                   }
+               });
+        // Create the AlertDialog object and return it
+        return builder.create();
+	}
 	@Override
 	protected void onStart() {
 		// TODO Auto-generated method stub

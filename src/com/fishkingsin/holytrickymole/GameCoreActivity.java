@@ -73,7 +73,6 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
-import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.Base64;
 import android.util.Log;
@@ -90,7 +89,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
@@ -106,7 +104,7 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 	public static PopupWindow myPopUp;
 	public static Bitmap bitmap;
 	public static boolean bSaved = false;
-
+	private static boolean isBegingPostingFB = false; 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 
@@ -171,8 +169,8 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 					@Override
 					public void run() {
 						new AlertDialog.Builder(GameCoreActivity.this)
-								.setTitle("Image Save").setMessage("Woohoo")
-								.setPositiveButton("OK", null).show();
+								.setTitle(getString(R.string.Save_Complete)).setMessage("Woohoo")
+								.setPositiveButton(getString(R.string.OK), null).show();
 					}
 				});
 			}
@@ -217,8 +215,11 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 	@Override
 	public void onBackPressed() {
 		// TODO Auto-generated method stub
+		if(!isBegingPostingFB)
+		{
 		super.onBackPressed();
 		overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+		}
 	}
 
 	@Override
@@ -263,7 +264,7 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 		RenderTexture target;
 		List<Sprite> moles;
 		private boolean bSave = false;
-		int currentMoleIndex = 0;
+//		int currentMoleIndex = 0;
 		public String tragetPlist = "";
 		private boolean bPostFB = false;
 
@@ -272,7 +273,7 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 		org.cocos2d.menus.Menu menu1;
 		String msg = "";
 		Map<String, String> descriptions;
-
+		float mScale = 1;
 		public MainLayer(MyListener myListener) {
 
 			CCSize s = Director.sharedDirector().winSize();
@@ -287,9 +288,9 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 			tragetPlist = prefs.getString(
 					mContext.getString(R.string.keyPlistName),
 					"tse_holy-tricky_female@2x.png");
-			float scale = s.width / sprite.getWidth();
+			mScale = s.width / sprite.getWidth();
 
-			sprite.setScale(scale);
+			sprite.setScale(mScale);
 
 			Layer layer = ColorLayer.node(new CCColor4B(93, 113, 112, 255));
 			mainNode.addChild(layer, -1);
@@ -306,7 +307,7 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 
 			mainNode.addChild(sprite, 0, kTagSprite);
 			sprite.setAnchorPoint(0, 0);
-			sprite.setPosition(0, (s.height - (sprite.getHeight() * scale)));// (int)
+			sprite.setPosition(0, (s.height - (sprite.getHeight() * mScale)));// (int)
 																				// (s.width
 																				// *
 																				// 0.5),
@@ -404,13 +405,13 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 
 		public void confirm() {
 			
-			if (currentMoleIndex > 0) {
+			if (moles.size() > 0) {
 				// addChild(menu2);
 				// removeChild(menu1,false);
-				msg = "Explain\n";
+				msg = mContext.getString(R.string.Explain)+"\n";
 				Map<String, String> tempMap = new HashMap<String, String>();
 				// check mole on stage
-				for (int i = 0; i < currentMoleIndex; i++) {
+				for (int i = 0; i < moles.size(); i++) {
 					float x = moles.get(i).getPositionX();
 					float y = moles.get(i).getPositionY();
 					// Log.v("mole pos"," x "+x+" y "+y);
@@ -433,9 +434,10 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 						}
 					}
 				}
+				myPopUp = setupPopWindow(msg, (Activity) mContext);
 			}
 
-			myPopUp = setupPopWindow(msg, (Activity) mContext);
+			
 		}
 
 		// public void cancel()
@@ -461,16 +463,10 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 								.getConfigurationObject("description");
 						com.longevitysoft.android.xml.plist.domain.String n = (com.longevitysoft.android.xml.plist.domain.String) d
 								.getConfigurationObject("name");
-						// msg+=s.getValue()+"\n";
-						// Log.v("setupDescription:name",n.getValue());
-						// Log.v("setupDescription:descritpion",s.getValue());
-						msg += ">" + s.getValue() + "\n";
+						
 						descriptions.put(n.getValue(), s.getValue());
 					}
 
-					// Label label = Label.label(msg, "DroidSans", 32);
-					// label.setColor(new CCColor3B(255,0,255));
-					// addChild(label);
 
 				}
 
@@ -594,42 +590,39 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 		public void addMole() {
 			Log.d("MainLayer",
 					"addMole currentMoleIndex:"
-							+ String.valueOf(currentMoleIndex));
+							+ String.valueOf(moles.size()));
 
-			if (currentMoleIndex < moles.size()) {
+			if ( moles.size() < 10) {
 				CCSize s = Director.sharedDirector().winSize();
-
-				moles.get(currentMoleIndex)
+				
+				moles.add(Sprite.sprite("mole01@2x.png"));
+				int index = moles.size()-1;
+				moles.get(index).setPosition((int) (s.width * 0.5), -50);
+				mainNode.addChild(moles.get(index), 0, index + 1);
+				moles.get(index).setScale(mScale);
+				moles.get(index)
 						.runAction(
 								MoveTo.action(0.5f, (int) (s.width * 0.5),
 										s.height / 2));
-				currentMoleIndex++;
+			
 			}
-			if (currentMoleIndex >= moles.size()) {
-				currentMoleIndex = moles.size() - 1;
-				// disable addButton;
-			}
+			
 
 		}
 
 		public void minusMole() {
 			Log.d("MainLayer",
 					"minusMole currentMoleIndex:"
-							+ String.valueOf(currentMoleIndex));
+							+ String.valueOf(moles.size()));
 
-			if (currentMoleIndex > -1) {
+			if (moles.size() !=0) {
 				// enable minusButton;
 				CCSize s = Director.sharedDirector().winSize();
-				if (moles.get(currentMoleIndex).isRunning())
-					moles.get(currentMoleIndex).stopAllActions();
-				moles.get(currentMoleIndex).setPosition((int) (s.width * 0.5),
-						-50);
-				currentMoleIndex--;
+				Sprite sprite = moles.get(moles.size()-1);
+				moles.remove(sprite);
+				mainNode.removeChild(sprite, true);
 			}
-			if (currentMoleIndex < 0) {
-				currentMoleIndex = 0;
-				// disable minusButton;
-			}
+			
 		}
 
 		@Override
@@ -785,10 +778,10 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 			// If the user wants to post photo or update status but the
 			// permission is not granted by user
 			new AlertDialog.Builder(GameCoreActivity.this)
-					.setTitle("Fail")
+					.setTitle(getString(R.string.Post_Error))
 					.setMessage(
 							"Unable to perform selected action because permissions were not granted.")
-					.setPositiveButton("Ok", null).show();
+					.setPositiveButton(getString(R.string.OK), null).show();
 			pendingAction = PendingAction.NONE;
 		} else if (state == SessionState.OPENED_TOKEN_UPDATED) {
 			handlePendingAction();
@@ -889,6 +882,7 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 	}
 
 	private void onClickPostPhoto() {
+		isBegingPostingFB = true;
 		performPublish(PendingAction.POST_PHOTO);
 	}
 
@@ -967,15 +961,17 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 		String title = null;
 		String alertMessage = null;
 		if (error == null) {
-			title = "Success";
+			title = getString(R.string.Post_Complete);
 			result.cast(GraphObjectWithId.class).getId();
-			alertMessage = "Sucessfully posted";// getString(R.string.successfully_posted_post,
+			alertMessage = getString(R.string.successfully_posted_post);// getString(R.string.successfully_posted_post,
 												// message, id);
 			mProgressHUD.dismiss();
+			isBegingPostingFB = false;
 		} else {
 			title = "Error";
 			alertMessage = error.getErrorMessage();
 			mProgressHUD.dismiss();
+			isBegingPostingFB = false;
 		}
 
 		new AlertDialog.Builder(this).setTitle(title).setMessage(alertMessage)
@@ -1042,9 +1038,9 @@ public class GameCoreActivity extends Activity implements OnCancelListener {
 		// scrollview.addView(title, new
 		// ViewGroup.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT));
 		scrollview.addView(tv, new ViewGroup.LayoutParams(
-				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+				LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 		scrollview.setLayoutParams(new ViewGroup.LayoutParams(
-				LayoutParams.WRAP_CONTENT, (int) (currentView.getHeight())));
+				LayoutParams.MATCH_PARENT, (int) (currentView.getHeight())));
 		fl.addView(scrollview);
 
 		final LinearLayout hl = new LinearLayout(activity);

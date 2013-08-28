@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+<string name="Facebook">Facebook</string>
+<string name="Confirm">確定</string>
+<string name="Cancel">取消</string>
+<string name="Save">儲存</string>
+<string name="Back">返回</string>
+<string name="OK">好</string>
+<string name="Credit">嗚謝</string>
+<string name="Male">男</string>
+<string name="Female">女</string>
+<string name="minus">減</string>
+<string name="add">加</string>
+<string name="Alert_Title">鎖定</string>
+<string name="Alert_Body">這張臉是目前被鎖定，請等待下一個版本</string>
+<string name="Explain">解說</string>
+<string name="Save_Complete">完成儲存</string>
+<string name="Post_Complete">上載完成</string>
+<string name="Post_Error">上載發生錯誤</string>
+<string name="Switch_User">切換用戶</string>
+<string name="successfully_posted_post">Successfully Posted Post</string>
+</resources>

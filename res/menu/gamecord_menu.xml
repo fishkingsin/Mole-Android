@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
     <item android:id="@+id/credit"
-          android:title="@string/credit"/>
+          android:title="@string/Credit"/>
     <item android:id="@+id/saveimage"
-          android:title="@string/saveimage"/>
+          android:title="@string/Save"/>
     <item android:id="@+id/facebook"
-          android:title="@string/facebook"/>
+          android:title="@string/Facebook"/>
 </menu>
