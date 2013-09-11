@@ -1,10 +1,12 @@
 package com.fishkingsin.holytrickymole;
 
-import com.google.ads.Ad;
-import com.google.ads.AdListener;
-import com.google.ads.AdRequest;
-import com.google.ads.AdRequest.ErrorCode;
-import com.google.ads.InterstitialAd;
+//import com.google.ads.Ad;
+//import com.google.ads.AdListener;
+//import com.google.ads.AdRequest;
+//import com.google.ads.AdRequest.ErrorCode;
+//import com.google.ads.InterstitialAd;
+
+import com.purplebrain.adbuddiz.sdk.AdBuddiz;
 
 import android.app.Activity;
 import android.content.Context;
@@ -33,10 +35,10 @@ import android.widget.PopupWindow;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-public class Main extends Activity implements OnClickListener, AdListener {
+public class Main extends Activity implements OnClickListener{//, AdListener {
 	protected static final String TAG = "Main";
 	private Context mContext;
-	private InterstitialAd interstitial;
+//	private InterstitialAd interstitial;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -44,16 +46,17 @@ public class Main extends Activity implements OnClickListener, AdListener {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.main);
 		// Create the interstitial
-	    interstitial = new InterstitialAd(this, "a1521c74c858d66");
+//	    interstitial = new InterstitialAd(this, "a1521c74c858d66");
 
 	    // Create ad request
-	    AdRequest adRequest = new AdRequest();
+//	    AdRequest adRequest = new AdRequest();
 //	    adRequest.addTestDevice("43466EBBCA9A9D93451946825E862160");
 	    // Begin loading your interstitial
-	    interstitial.loadAd(adRequest);
+//	    interstitial.loadAd(adRequest);
 
 	    // Set Ad Listener to use the callbacks below
-	    interstitial.setAdListener(this);
+//	    interstitial.setAdListener(this);
+		AdBuddiz.getInstance().cacheAds(this);
 		Button button = (Button) findViewById(R.id.startbutton);
 
 		button.setOnClickListener((OnClickListener) this);
@@ -103,7 +106,12 @@ public class Main extends Activity implements OnClickListener, AdListener {
 		});
 
 	}
-
+	@Override
+	protected void onStart() {
+		super.onStart();
+		AdBuddiz.getInstance().onStart(this);
+		AdBuddiz.getInstance().showAd();
+	}
 	@Override
 	public void onClick(View arg) {
 		if (arg.getId() == R.id.startbutton) {
@@ -186,36 +194,36 @@ public class Main extends Activity implements OnClickListener, AdListener {
 		}
 	}
 
-	@Override
-	public void onDismissScreen(Ad arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void onFailedToReceiveAd(Ad arg0, ErrorCode arg1) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void onLeaveApplication(Ad arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void onPresentScreen(Ad arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void onReceiveAd(Ad ad) {
-		// TODO Auto-generated method stub
-		Log.d("OK", "Received ad");
-		if (ad == interstitial) {
-			interstitial.show();
-		}
-	}
+//	@Override
+//	public void onDismissScreen(Ad arg0) {
+//		// TODO Auto-generated method stub
+//
+//	}
+//
+//	@Override
+//	public void onFailedToReceiveAd(Ad arg0, ErrorCode arg1) {
+//		// TODO Auto-generated method stub
+//
+//	}
+//
+//	@Override
+//	public void onLeaveApplication(Ad arg0) {
+//		// TODO Auto-generated method stub
+//
+//	}
+//
+//	@Override
+//	public void onPresentScreen(Ad arg0) {
+//		// TODO Auto-generated method stub
+//
+//	}
+//
+//	@Override
+//	public void onReceiveAd(Ad ad) {
+//		// TODO Auto-generated method stub
+//		Log.d("OK", "Received ad");
+//		if (ad == interstitial) {
+//			interstitial.show();
+//		}
+//	}
 }
